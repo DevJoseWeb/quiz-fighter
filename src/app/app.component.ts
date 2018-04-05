@@ -8,24 +8,18 @@ import * as Phaser from 'phaser/dist/phaser';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements AfterViewInit {
-  title = 'app';
   game: Phaser.Game;
-  floor: Phaser.Rectangle;
 
   config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
     scene: {
+    	key: 'principal',
         preload: this.preload,
-        create: this.create,
-        update: this.update,
+        create: this.create
     }
   };
-
-  constructor() {
-  	
-  }
 
   ngAfterViewInit() {
   	this.game = new Phaser.Game(this.config);
@@ -33,7 +27,6 @@ export class AppComponent implements AfterViewInit {
   }
 
   preload() {
-  	console.log('preload...');
   	const scene: Phaser.Scene = this;
   	console.log(scene);
   	scene.load.atlas('fairy_1', 'assets/spritesheet_1.png', 
@@ -49,7 +42,11 @@ export class AppComponent implements AfterViewInit {
 	    key: 'idle',
 	    frames: framesIdle,
 	    frameRate: 8,
-	    repeat: -1
+	    repeat: -1,
+	    onStart: (sprite) => { 
+	    	sprite.originX = 0.5;
+  			sprite.originY = 0.5;
+	    }
 	});
 
 	const framesAttack = scene.anims.generateFrameNames('fairy_1', 
@@ -58,7 +55,14 @@ export class AppComponent implements AfterViewInit {
 	    key: 'attack',
 	    frames: framesAttack,
 	    frameRate: 8,
-	    repeat: 0
+	    repeat: 0,
+	    onStart: (sprite) => {
+	  		sprite.originX = 0.25;
+	  		sprite.originY = 0.53;
+		},
+	    onComplete: (sprite) => {
+	  		sprite.play('idle');
+		}
 	});
 
 	const fairy1 = scene.add.sprite(300, 300, 'fairy_1');
@@ -66,25 +70,11 @@ export class AppComponent implements AfterViewInit {
 	fairy1.scaleX = 0.5;
 	fairy1.scaleY = 0.5;
 	fairy1.play('idle');
-
-	scene.meucontrole = { contador: 0 };
   }
 
-  update() {
-  	const scene: Phaser.Scene = this;
-  	const fairy1 = scene.children.list[0];
-
-  	scene.meucontrole.contador++;
-  	if (scene.meucontrole.contador == 120) {
-  		fairy1.originX = 0.25;
-  		fairy1.originY = 0.53;
-  		fairy1.play('attack');
-  	}
-  	if (scene.meucontrole.contador == 160) {
-  		fairy1.originX = 0.5;
-  		fairy1.originY = 0.5;
-  		fairy1.play('idle');
-  		scene.meucontrole.contador = 0;
-  	}
+  atacar() {
+  	this.game.scene.getScene('principal')
+  		.children.getAt(0).play('attack');
   }
+  
 }
