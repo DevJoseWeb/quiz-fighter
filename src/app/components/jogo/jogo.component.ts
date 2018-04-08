@@ -14,10 +14,15 @@ export class JogoComponent implements AfterViewInit {
 
   ngAfterViewInit() {
   	const jogadores = [
-  		this.animacaoService.P_FADA_VERMELHA,
-  		this.animacaoService.P_ELFO_VERDE
+  		this.animacaoService.P_ARQUEIRA,
+  		this.animacaoService.P_ELFO_AZUL,
+  		this.animacaoService.P_ELFO_VERDE,
+  		this.animacaoService.P_FADA_VERMELHA
   	];
-  	this.animacaoService.iniciarAnimacao(jogadores);
+  	this.animacaoService.iniciarAnimacao([
+  			jogadores[Math.floor(Math.random() * 4)], 
+  			jogadores[Math.floor(Math.random() * 4)]
+  		], 5);
   }
 
   atacar(jogador: number) {

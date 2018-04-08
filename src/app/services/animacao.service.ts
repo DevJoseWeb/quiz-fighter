@@ -3,21 +3,26 @@ import { Injectable } from '@angular/core';
 import * as Phaser from 'phaser/dist/phaser';
 
 let personagens = [];
+let numHitsTerminar;
 
 @Injectable()
 export class AnimacaoService {
 
   readonly SCENE_PRINCIPAL = 'principal';
-  readonly WIDTH = 400;
+  readonly WIDTH  = 400;
   readonly HEIGHT = 200;
 
   readonly P_FADA_VERMELHA = 'fada-vermelha';
-  readonly P_ELFO_VERDE = 'elfo-verde';
+  readonly P_ELFO_VERDE    = 'elfo-verde';
+  readonly P_ELFO_AZUL     = 'elfo-azul';
+  readonly P_ARQUEIRA      = 'arqueira';
 
   private game: Phaser.Game;
 
-  iniciarAnimacao(jogadores: string[]) {
+  iniciarAnimacao(jogadores: string[], hitsTerminar: number) {
+  	console.log(jogadores);
   	personagens = jogadores;
+  	numHitsTerminar = hitsTerminar;
   	this.game = new Phaser.Game({
 	    type: Phaser.AUTO,
 	    width: this.WIDTH,
@@ -36,31 +41,48 @@ export class AnimacaoService {
   	const scene: Phaser.Scene = this;
   	console.log(scene);
   	const backgrounds = [
-  		'assets/background1.png',
-  		'assets/background2.png',
-  		'assets/background3.png',
-  		'assets/background4.png'
+  		'assets/backgrounds/background1.png',
+  		'assets/backgrounds/background2.png',
+  		'assets/backgrounds/background3.png',
+  		'assets/backgrounds/background4.png'
   	];
   	const backgroundIndex = Math.floor(
   		Math.random() * backgrounds.length);
 
   	scene.load.image('background', backgrounds[backgroundIndex]);
-  	scene.load.audioSprite('attack', 'assets/audio/attack.mp3');
-  	scene.load.audioSprite('end', 'assets/audio/end.wav');
+  	scene.load.audioSprite('attack', 'assets/audios/attack.mp3');
+  	scene.load.audioSprite('end', 'assets/audios/end.wav');
   	scene.load.atlas(
   		'fada-vermelha',
-  		'assets/spritesheet-fada-vermelha.png', 
-  		'assets/sprites-fada-vermelha.json'
+  		'assets/sprites/spritesheet-fada-vermelha.png', 
+  		'assets/sprites/sprites-fada-vermelha.json'
   	);
   	scene.load.atlas(
   		'elfo-verde',
-  		'assets/spritesheet-elfo-verde.png', 
-  		'assets/sprites-elfo-verde.json'
+  		'assets/sprites/spritesheet-elfo-verde.png', 
+  		'assets/sprites/sprites-elfo-verde.json'
+  	);
+  	scene.load.atlas(
+  		'elfo-azul',
+  		'assets/sprites/spritesheet-elfo-azul.png', 
+  		'assets/sprites/sprites-elfo-azul.json'
+  	);
+  	scene.load.atlas(
+  		'arqueira',
+  		'assets/sprites/spritesheet-arqueira.png', 
+  		'assets/sprites/sprites-arqueira.json'
   	);
 
-  	scene.score = [
-  		{ jogador1: { pontos: 150, forca: 30 }}, 
-  		{ jogador2: { pontos: 150, forca: 30 }}
+  	scene.score = [{ 
+  			jogador1: { 
+  				pontos: 150, 
+  				forca: Math.ceil(150 / numHitsTerminar) 
+  			}}, { 
+  			jogador2: { 
+  				pontos: 150, 
+  				forca: Math.ceil(150 / numHitsTerminar) 
+  			}
+  		}
   	];
   }
 
