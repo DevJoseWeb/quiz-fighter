@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 
 import * as Phaser from 'phaser/dist/phaser';
 
-let personagens = [];
-let numHitsTerminar;
+let personagens: string[] = [];
+let numHitsTerminar: number;
+let totalPontos: number;
 
 @Injectable()
 export class AnimacaoService {
@@ -19,10 +20,11 @@ export class AnimacaoService {
 
   private game: Phaser.Game;
 
-  iniciarAnimacao(jogadores: string[], hitsTerminar: number) {
-  	console.log(jogadores);
+  iniciarAnimacao(jogadores: string[], hitsTerminar: number,
+  		pontosTotais: number) {
   	personagens = jogadores;
   	numHitsTerminar = hitsTerminar;
+  	totalPontos = pontosTotais;
   	this.game = new Phaser.Game({
 	    type: Phaser.AUTO,
 	    width: this.WIDTH,
@@ -75,12 +77,12 @@ export class AnimacaoService {
 
   	scene.score = [{ 
   			jogador1: { 
-  				pontos: 150, 
-  				forca: Math.ceil(150 / numHitsTerminar) 
+  				pontos: totalPontos, 
+  				forca: Math.ceil(totalPontos / numHitsTerminar) 
   			}}, { 
   			jogador2: { 
-  				pontos: 150, 
-  				forca: Math.ceil(150 / numHitsTerminar) 
+  				pontos: totalPontos, 
+  				forca: Math.ceil(totalPontos / numHitsTerminar) 
   			}
   		}
   	];
@@ -218,7 +220,7 @@ export class AnimacaoService {
   	const jogador1 = this.obterJogador1();
   	const jogador2 = this.obterJogador2();
   	
-  	if (jogador == 1) {
+  	if (jogador == 0) {
 	  	jogador1.depth = 2;
 	  	jogador2.depth = 1;
 	  	jogador1.play('attack-' + personagens[0]);

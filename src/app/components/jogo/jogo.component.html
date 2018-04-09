@@ -1,7 +1,31 @@
-<button name="jogador1Atacar" (click)="atacar(1)">
-	Jogador 1 Atacar
-</button>
-<button name="jogador2Atacar" (click)="atacar(2)">
-	Jogador 2 Atacar
-</button>
+<div id="quiz">
+  <form>
+	<h1>Quiz Fighter</h1>
+	<h2>
+		{{ jogadores[0].nome }} 
+		<u>[{{ placar[0].acertos }} X {{ placar[1].acertos }}]</u>
+		{{ jogadores[1].nome }}
+	</h2>
+	<p>Vez: {{ jogadores[vezJogar].nome }}</p>
+	<p><strong>{{ perguntaAtual.questao }}</strong></p>
+	<ul>
+		<li *ngFor="let opcao of perguntaAtual.opcoes; let i=index">
+			<label>
+				<input 
+					name="questoes" 
+					type="radio" 
+					[checked]="selecionado(i)"
+					(click)="selecionarOpcao(i)">
+				{{ opcao }}
+			</label>
+		</li>
+	</ul>
+	<input 
+		type="button" 
+		name="btnConfirmar" 
+		(click)="confirmar()" 
+		value="Confirmar" 
+		[disabled]="questaoSel < 0">
+  </form>
+</div>
 <div id="game"></div>

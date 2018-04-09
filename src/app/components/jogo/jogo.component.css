@@ -1,0 +1,16 @@
+#quiz {
+	background-color: #FFC;
+	width: 400px;
+	height: 350px;
+	text-align: center;
+}
+
+#quiz ul {
+  list-style-type: none;
+  text-align: left;
+  padding-left: 150px;
+}
+
+#quiz label {
+	cursor: pointer;
+}
