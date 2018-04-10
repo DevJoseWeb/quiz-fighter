@@ -8,24 +8,19 @@
 	</h2>
 	<p>Vez: {{ jogadores[vezJogar].nome }}</p>
 	<p><strong>{{ perguntaAtual.questao }}</strong></p>
-	<ul>
-		<li *ngFor="let opcao of perguntaAtual.opcoes; let i=index">
-			<label>
-				<input 
-					name="questoes" 
-					type="radio" 
-					[checked]="selecionado(i)"
-					(click)="selecionarOpcao(i)">
-				{{ opcao }}
-			</label>
-		</li>
-	</ul>
-	<input 
-		type="button" 
-		name="btnConfirmar" 
-		(click)="confirmar()" 
-		value="Confirmar" 
-		[disabled]="questaoSel < 0">
+	<div *ngFor="let opcao of perguntaAtual.opcoes; let i=index"
+		class="btnOpcao"
+		[ngClass]="{ 'btnOpcaoAtivo': i==questaoSel, 
+			'btnOpcao': i!=questaoSel }"
+		(click)="selecionarOpcao(i)">
+		{{ opcao }}
+	</div>
+	<button 
+		class="btnConfirmar"
+		(click)="confirmar($event)" 
+		[disabled]="questaoSel < -10">
+		Confirmar
+	</button>
   </form>
 </div>
 <div id="game"></div>

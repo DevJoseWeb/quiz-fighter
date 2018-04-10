@@ -1,4 +1,6 @@
 #quiz {
+	background-image: url("/assets/backgrounds/quiz-background.png");
+	background-repeat: no-repeat;
 	background-color: #FFC;
 	width: 400px;
 	height: 350px;
@@ -13,4 +15,64 @@
 
 #quiz label {
 	cursor: pointer;
+}
+
+.btnConfirmar {
+	background-image: url("/assets/botoes/ativo.png");
+	background-repeat: no-repeat;
+	background-color: Transparent;
+    cursor:pointer;
+    border: none;
+    width: 200px;
+    height: 54px;
+    color: #FFF;
+    font-size: 20px;
+}
+
+.btnConfirmar:hover {
+	background-image: url("/assets/botoes/hover.png");
+}
+
+.btnConfirmar:active {
+	background-image: url("/assets/botoes/ativo.png");
+}
+
+.btnConfirmar:focus {
+  outline: none;
+}
+
+.btnOpcao {
+	background-image: url("/assets/botoes/normal-150.png");
+	background-repeat: no-repeat;
+	background-color: Transparent;
+    cursor:pointer;
+    border: none;
+    width: 150px;
+    height: 41px;
+    color: #FFF;
+    font-size: 18px;
+    float: left;
+    padding-top: 10px;
+    padding-bottom: 5px;
+    margin-left: 30px;
+}
+
+.btnOpcao:hover {
+	background-image: url("/assets/botoes/hover-150.png");
+}
+
+.btnOpcaoAtivo {
+	background-image: url("/assets/botoes/ativo-150.png");
+	background-repeat: no-repeat;
+	background-color: Transparent;
+    cursor:pointer;
+    border: none;
+    width: 150px;
+    height: 41px;
+    color: #FFF;
+    font-size: 18px;
+    float: left;
+    padding-top: 10px;
+    padding-bottom: 5px;
+    margin-left: 30px;
 }

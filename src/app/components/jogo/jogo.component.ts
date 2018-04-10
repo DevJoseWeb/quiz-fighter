@@ -54,7 +54,8 @@ export class JogoComponent implements AfterViewInit, OnInit {
   	this.questaoSel = opcaoNum;
   }
 
-  confirmar() {
+  confirmar(event: any) {
+  	event.preventDefault();
   	if (this.perguntaAtual.correta == this.questaoSel) {
   		this.placar[this.vezJogar].acertos++;
   		alert('CERTA RESPOSTA!!!');
