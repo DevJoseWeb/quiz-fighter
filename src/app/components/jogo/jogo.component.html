@@ -1,13 +1,9 @@
-<div id="quiz">
-  <form>
-	<h1>Quiz Fighter</h1>
-	<h2>
-		{{ jogadores[0].nome }} 
-		<u>[{{ placar[0].acertos }} X {{ placar[1].acertos }}]</u>
-		{{ jogadores[1].nome }}
-	</h2>
-	<p>Vez: {{ jogadores[vezJogar].nome }}</p>
-	<p><strong>{{ perguntaAtual.questao }}</strong></p>
+<div class="quiz">
+	<div class="logo"></div>
+	<!--<p>Vez: {{ jogadores[vezJogar].nome }}</p>-->
+	<p class="pergunta">
+		{{ perguntaAtual.questao }}
+	</p>
 	<div *ngFor="let opcao of perguntaAtual.opcoes; let i=index"
 		class="btnOpcao"
 		[ngClass]="{ 'btnOpcaoAtivo': i==questaoSel, 
@@ -17,10 +13,11 @@
 	</div>
 	<button 
 		class="btnConfirmar"
+		[ngClass]="{ 'btnConfirmar': questaoSel >= 0, 
+			'btnInativo': questaoSel < 0 }"
 		(click)="confirmar($event)" 
-		[disabled]="questaoSel < -10">
-		Confirmar
+		[disabled]="questaoSel < 0">
+		Confirmar<!--Aguarde a sua vez-->
 	</button>
-  </form>
 </div>
 <div id="game"></div>

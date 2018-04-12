@@ -1,20 +1,38 @@
-#quiz {
+.quiz {
 	background-image: url("/assets/backgrounds/quiz-background.png");
 	background-repeat: no-repeat;
 	background-color: #FFC;
 	width: 400px;
-	height: 350px;
+	height: 400px;
 	text-align: center;
 }
 
-#quiz ul {
+.quiz ul {
   list-style-type: none;
   text-align: left;
   padding-left: 150px;
 }
 
-#quiz label {
+.quiz label {
 	cursor: pointer;
+}
+
+.logo {
+	width: 400px;
+	height: 135px;
+	background-image: url("/assets/backgrounds/logo.png");
+	background-repeat: no-repeat;
+}
+
+.pergunta {
+	background-image: url("/assets/backgrounds/pergunta-background.png");
+	background-repeat: no-repeat;
+	color: #FFF;
+	width: 400px;
+	height: 43px;
+	text-align: center;
+	font-size: 20px;
+	padding-top: 9px;
 }
 
 .btnConfirmar {
@@ -39,6 +57,17 @@
 
 .btnConfirmar:focus {
   outline: none;
+}
+
+.btnInativo {
+	background-image: url("/assets/botoes/lock.png");
+	background-repeat: no-repeat;
+	background-color: Transparent;
+    border: none;
+    width: 200px;
+    height: 54px;
+    color: #FFF;
+    font-size: 20px;
 }
 
 .btnOpcao {
