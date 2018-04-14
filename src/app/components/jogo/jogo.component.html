@@ -19,5 +19,13 @@
 		[disabled]="questaoSel < 0">
 		Confirmar<!--Aguarde a sua vez-->
 	</button>
+	<div 
+		class="popup"
+		[ngStyle]="{'display': mostrarPopup ? 'block' : 'none'}">
+		<p>{{ msgPopup }}</p>
+		<div class="btnPopup" (click)="fecharPopup()">
+			OK
+		</div>
+	</div>
 </div>
 <div id="game"></div>

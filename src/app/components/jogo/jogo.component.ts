@@ -9,7 +9,9 @@ import { AnimacaoService } from '../../services';
 })
 export class JogoComponent implements AfterViewInit, OnInit {
 
-  readonly NUM_QUESTOES: number = 5;
+  readonly MSG_CORRETA = 'Certa resposta!';
+  readonly MSG_INCORRETA = 'Resposta incorreta.';
+  readonly NUM_QUESTOES = 5;
   jogadores: any;
   vezJogar: number;
   placar: any;
@@ -17,6 +19,8 @@ export class JogoComponent implements AfterViewInit, OnInit {
   questaoSel: number;
   perguntas: any;
   perguntaAtual: any;
+  msgPopup: string;
+  mostrarPopup: boolean;
 
   constructor(
   	private animacaoService: AnimacaoService) {}
@@ -58,20 +62,30 @@ export class JogoComponent implements AfterViewInit, OnInit {
   	event.preventDefault();
   	if (this.perguntaAtual.correta == this.questaoSel) {
   		this.placar[this.vezJogar].acertos++;
-  		alert('CERTA RESPOSTA!!!');
-  		this.animacaoService.atacar(this.vezJogar);
+  		this.msgPopup = this.MSG_CORRETA;
+  		setTimeout(
+  			() => this.animacaoService.atacar(this.vezJogar), 500);
   	} else {
-  		alert('RESPOSTA INCORRETA...');
+  		this.msgPopup = this.MSG_INCORRETA;
   	}
 
   	if (this.placar[0].acertos == 5) 
-  		alert('JOGADOR 1 VENCEU, FINISH HIM!!!');
+  		this.msgPopup = 'JOGADOR 1 VENCEU!!!';
   	if (this.placar[1].acertos == 5) 
-  		alert('JOGADOR 2 VENCEU, FINISH HIM!!!'); 
+  		this.msgPopup = 'JOGADOR 2 VENCEU!!!';
+  	this.exibirPopup();
 
   	this.vezJogar = (this.vezJogar == 0) ? 1 : 0;
   	this.questaoSel = -1;
   	this.perguntaAtual = this.perguntas[++this.questaoNum];
+  }
+
+  exibirPopup() {
+  	this.mostrarPopup = true;
+  }
+
+  fecharPopup() {
+  	this.mostrarPopup = false;
   }
 
   selecionado(index: number) {
