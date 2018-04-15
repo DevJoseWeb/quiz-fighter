@@ -10,6 +10,7 @@ import {
 import { AppComponent } from './app.component';
 import { JogoComponent } from './components';
 import { AnimacaoService } from './services';
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { AnimacaoService } from './services';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    MatButtonModule
+    MatButtonModule,
+    AppRoutingModule
   ],
   providers: [
   	AnimacaoService
