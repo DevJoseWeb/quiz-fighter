@@ -51,7 +51,7 @@ export class JogoComponent implements AfterViewInit, OnInit {
   	this.animacaoService.iniciarAnimacao([
   			avatares[Math.floor(Math.random() * 4)], 
   			avatares[Math.floor(Math.random() * 4)]
-  		], 5, 150);
+  		], 5, 150, 'Jogador 1', 'Jogador 2');
   }
 
   selecionarOpcao(opcaoNum: number) {
@@ -63,8 +63,7 @@ export class JogoComponent implements AfterViewInit, OnInit {
   	if (this.perguntaAtual.correta == this.questaoSel) {
   		this.placar[this.vezJogar].acertos++;
   		this.msgPopup = this.MSG_CORRETA;
-  		setTimeout(
-  			() => this.animacaoService.atacar(this.vezJogar), 500);
+  		this.animacaoService.atacar(this.vezJogar);
   	} else {
   		this.msgPopup = this.MSG_INCORRETA;
   	}

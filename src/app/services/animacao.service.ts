@@ -5,6 +5,8 @@ import * as Phaser from 'phaser/dist/phaser';
 let personagens: string[] = [];
 let numHitsTerminar: number;
 let totalPontos: number;
+let nomeJogador1: string;
+let nomeJogador2: string;
 
 @Injectable()
 export class AnimacaoService {
@@ -21,10 +23,13 @@ export class AnimacaoService {
   private game: Phaser.Game;
 
   iniciarAnimacao(jogadores: string[], hitsTerminar: number,
-  		pontosTotais: number) {
+  		pontosTotais: number, nomeJog1: string, 
+  		nomeJog2: string) {
   	personagens = jogadores;
   	numHitsTerminar = hitsTerminar;
   	totalPontos = pontosTotais;
+  	nomeJogador1 = nomeJog1 ? nomeJog1.substr(0, 17) : nomeJog1;
+  	nomeJogador2 = nomeJog2 ? nomeJog2.substr(0, 17) : nomeJog2;
   	this.game = new Phaser.Game({
 	    type: Phaser.AUTO,
 	    width: this.WIDTH,
@@ -186,8 +191,13 @@ export class AnimacaoService {
 
 	const graphics = scene.add.graphics({ 
 		lineStyle: { width: 1, color: 0x000000 }, 
-		fillStyle: { color: 0x00FF00 } 
+		fillStyle: { color: 0x00BB00 } 
 	});
+
+	const estiloTexto = { fontSize: '14px', fill: '#FFF' };
+	scene.add.text(15, 7, nomeJogador1, estiloTexto);
+	scene.add.text(380 - (nomeJogador2.length * 8), 7, 
+		nomeJogador2, estiloTexto);
   }
 
   update() {
@@ -202,18 +212,18 @@ export class AnimacaoService {
 
 	// x, y, width, height
 	graphics.fillRectShape(new Phaser.Geom.Rectangle(
-		10, 10, ((pontosJog1 >= 0) ? pontosJog1 : 0), 12
+		10, 5, ((pontosJog1 >= 0) ? pontosJog1 : 0), 20
 	));
 
 	graphics.strokeRectShape(
-		new Phaser.Geom.Rectangle(10, 10, 150, 12));
+		new Phaser.Geom.Rectangle(10, 5, 150, 20));
 
 	graphics.fillRectShape(new Phaser.Geom.Rectangle(
-		(240 + (150 - pontosJog2)), 10, 
-		((pontosJog2 >= 0) ? pontosJog2 : 0), 12));
+		(240 + (150 - pontosJog2)), 5, 
+		((pontosJog2 >= 0) ? pontosJog2 : 0), 20));
 
 	graphics.strokeRectShape(
-		new Phaser.Geom.Rectangle(240, 10, 150, 12));
+		new Phaser.Geom.Rectangle(240, 5, 150, 20));
   }
 
   atacar(jogador: number) {
