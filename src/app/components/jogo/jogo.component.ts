@@ -1,4 +1,6 @@
-import { Component, AfterViewInit, OnInit } from '@angular/core';
+import { 
+  Component, AfterViewInit, OnInit, OnDestroy 
+} from '@angular/core';
 
 import { AnimacaoService } from '../../services';
 
@@ -7,7 +9,7 @@ import { AnimacaoService } from '../../services';
   templateUrl: './jogo.component.html',
   styleUrls: ['./jogo.component.css']
 })
-export class JogoComponent implements AfterViewInit, OnInit {
+export class JogoComponent implements AfterViewInit, OnInit, OnDestroy {
 
   readonly MSG_CORRETA = 'Certa resposta!';
   readonly MSG_INCORRETA = 'Resposta incorreta.';
@@ -52,6 +54,10 @@ export class JogoComponent implements AfterViewInit, OnInit {
   			avatares[Math.floor(Math.random() * 4)], 
   			avatares[Math.floor(Math.random() * 4)]
   		], 5, 150, 'Jogador 1', 'Jogador 2');
+  }
+
+  ngOnDestroy() {
+    document.getElementsByTagName('canvas')[0].remove();
   }
 
   selecionarOpcao(opcaoNum: number) {
