@@ -1,6 +1,8 @@
 import { 
   Component, AfterViewInit, OnInit, OnDestroy 
 } from '@angular/core';
+import { AngularFireAuth } from 'angularfire2/auth';
+import { Router } from '@angular/router';
 
 import { AnimacaoService } from '../../services';
 
@@ -9,12 +11,12 @@ import { AnimacaoService } from '../../services';
   templateUrl: './jogo.component.html',
   styleUrls: ['./jogo.component.css']
 })
-export class JogoComponent implements AfterViewInit, OnInit, OnDestroy {
+export class JogoComponent implements AfterViewInit, 
+    OnInit, OnDestroy {
 
   readonly MSG_CORRETA = 'Certa resposta!';
   readonly MSG_INCORRETA = 'Resposta incorreta.';
   readonly NUM_QUESTOES = 5;
-  jogadores: any;
   vezJogar: number;
   placar: any;
   questaoNum: number;
@@ -25,13 +27,11 @@ export class JogoComponent implements AfterViewInit, OnInit, OnDestroy {
   mostrarPopup: boolean;
 
   constructor(
-  	private animacaoService: AnimacaoService) {}
+  	private animacaoService: AnimacaoService,
+    private afAuth: AngularFireAuth,
+    private router: Router) {}
 
   ngOnInit() {
-  	this.jogadores = [
-  		{ nome: 'Jogador 1' },
-  		{ nome: 'Jogador 2' }
-  	];
   	this.vezJogar = 0; // jogador 1
   	this.placar = [
   		{ acertos: 0 }, 
@@ -44,20 +44,35 @@ export class JogoComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-  	const avatares = [
-  		this.animacaoService.P_ARQUEIRA,
-  		this.animacaoService.P_ELFO_AZUL,
-  		this.animacaoService.P_ELFO_VERDE,
-  		this.animacaoService.P_FADA_VERMELHA
-  	];
-  	this.animacaoService.iniciarAnimacao([
-  			avatares[Math.floor(Math.random() * 4)], 
-  			avatares[Math.floor(Math.random() * 4)]
-  		], 5, 150, 'Jogador 1', 'Jogador 2');
+    this.afAuth.authState.subscribe(authState => {
+      if (authState) { 
+        this.iniciarJogo(authState.email.split('@')[0]);
+      } else {
+        //window.location.href = window.location.href
+          //.replace('/jogo', '');
+        this.router.navigate(['/']);
+      }
+    });
+  }
+
+  iniciarJogo(nome: string) {
+    const avatares = [
+      this.animacaoService.P_ARQUEIRA,
+      this.animacaoService.P_ELFO_AZUL,
+      this.animacaoService.P_ELFO_VERDE,
+      this.animacaoService.P_FADA_VERMELHA
+    ];
+    this.animacaoService.iniciarAnimacao([
+      avatares[Math.floor(Math.random() * 4)], 
+      avatares[Math.floor(Math.random() * 4)]
+    ], 5, 150, nome, 'Jogador 2');
   }
 
   ngOnDestroy() {
-    document.getElementsByTagName('canvas')[0].remove();
+    const canvas = document.getElementsByTagName('canvas');
+    if (canvas.length > 0) {
+      canvas[0].remove();
+    }
   }
 
   selecionarOpcao(opcaoNum: number) {
