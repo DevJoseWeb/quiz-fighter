@@ -13,3 +13,12 @@
 	background-image: url("/assets/backgrounds/logo.png");
 	background-repeat: no-repeat;
 }
+
+mat-list {
+	margin-left: 90px;
+	margin-top: 50px;
+}
+
+.mat-raised-button, .mat-button {
+	min-width: 180px;
+}

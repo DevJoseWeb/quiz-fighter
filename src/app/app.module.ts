@@ -4,11 +4,15 @@ import {
   BrowserAnimationsModule
 } from '@angular/platform-browser/animations';
 import { 
-  MatButtonModule
+  MatInputModule,
+  MatButtonModule,
+  MatListModule,
+  MatSnackBarModule
 } from '@angular/material';
 import { AngularFireModule } from 'angularfire2';
 import { environment } from '../environments/environment';
 import { AngularFireAuthModule } from 'angularfire2/auth';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { 
@@ -27,10 +31,14 @@ import { AppRoutingModule } from './app-routing.module';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    MatInputModule,
     MatButtonModule,
+    MatListModule,
+    MatSnackBarModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    ReactiveFormsModule
   ],
   providers: [
   	AnimacaoService
