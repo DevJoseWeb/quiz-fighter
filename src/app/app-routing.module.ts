@@ -1,12 +1,15 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { JogoComponent, LoginComponent } from './components';
+import { 
+	PreJogoComponent, JogoComponent, LoginComponent 
+} from './components';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'jogo', component: JogoComponent }
+  { path: 'pre-jogo', component: PreJogoComponent },
+  { path: 'jogo', component: JogoComponent },
 ];
 
 @NgModule({

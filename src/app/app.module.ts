@@ -16,8 +16,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { 
-  JogoComponent,
-  LoginComponent 
+  JogoComponent, LoginComponent, PreJogoComponent
 } from './components';
 import { AnimacaoService } from './services';
 import { AppRoutingModule } from './app-routing.module';
@@ -26,7 +25,8 @@ import { AppRoutingModule } from './app-routing.module';
   declarations: [
     AppComponent,
     JogoComponent,
-    LoginComponent
+    LoginComponent,
+    PreJogoComponent
   ],
   imports: [
     BrowserModule,

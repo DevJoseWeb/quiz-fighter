@@ -12,8 +12,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class LoginComponent implements OnInit {
 
+  readonly PRE_JOGO_PATH: string = '/pre-jogo';
   form: FormGroup;
-  public cadastro: boolean;
+  cadastro: boolean;
 
   constructor(
   	public afAuth: AngularFireAuth,
@@ -36,7 +37,7 @@ export class LoginComponent implements OnInit {
   logarGoogle() {
     this.afAuth.auth.signInWithPopup(
       new firebase.auth.GoogleAuthProvider())
-      .then(value => this.router.navigate(['/jogo']))
+      .then(value => this.router.navigate([this.PRE_JOGO_PATH]))
       .catch(err => {
         console.log('Erro:', err.message);
         this.snackBar.open('Problema ao autenticar no Google.', 
@@ -51,7 +52,7 @@ export class LoginComponent implements OnInit {
     const dados = this.form.value;
     this.afAuth.auth
       .signInWithEmailAndPassword(dados.email, dados.senha)
-      .then(value => this.router.navigate(['/jogo']))
+      .then(value => this.router.navigate([this.PRE_JOGO_PATH]))
       .catch(err => {
         console.log('Erro: ', err.message);
         this.snackBar.open("Usuário/senha inválido(s)", 
@@ -74,7 +75,7 @@ export class LoginComponent implements OnInit {
     const dados = this.form.value;
   	this.afAuth.auth.createUserAndRetrieveDataWithEmailAndPassword(
   	  dados.email, dados.senha)
-  	  .then(value => this.router.navigate(['/jogo']))
+  	  .then(value => this.router.navigate([this.PRE_JOGO_PATH]))
   	  .catch(err => {
         console.log('Erro: ', err.message);
         this.snackBar.open("Problema ao cadastrar email.", 
