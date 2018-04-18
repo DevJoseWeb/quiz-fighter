@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+
+import { AnimacaoService } from '../../services';
 
 @Component({
   selector: 'app-pre-jogo',
@@ -7,9 +10,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PreJogoComponent implements OnInit {
 
-  constructor() { }
+  personagem: string;
+
+  constructor(
+  	public animService: AnimacaoService,
+  	private router: Router) {}
 
   ngOnInit() {
+  }
+
+  selecionarPersonagem(personagem: string) {
+  	if (this.personagem) {
+  		return;
+  	}
+  	this.personagem = personagem;
+  	sessionStorage['qf.jogador1'] = personagem;
+  	setTimeout(() => this.router.navigate(['/jogo']), 1500);
   }
 
 }

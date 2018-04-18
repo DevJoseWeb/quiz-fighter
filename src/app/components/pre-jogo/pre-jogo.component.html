@@ -1,4 +1,31 @@
 <div class="pre-jogo">
 	<div class="logo"></div>
-	<p><a mat-button color="primary" routerLink="/jogo">Jogo</a></p>
+	<p class="titulo">Selecione o seu personagem</p>
+	<div class="personagem"
+		[ngClass]="{ 'p-borda': !personagem, 
+			'p-selecionado': animService.P_ARQUEIRA == personagem }"
+		(click)="selecionarPersonagem(animService.P_ARQUEIRA)">
+		<img src="/assets/sprites/arqueira.png">
+	</div>
+	<div class="personagem"
+		[ngClass]="{ 'p-borda': !personagem, 
+			'p-selecionado': animService.P_ELFO_AZUL == personagem }"
+		(click)="selecionarPersonagem(animService.P_ELFO_AZUL)">
+		<img src="/assets/sprites/elfo-azul.png">
+	</div>
+	<div class="personagem"
+		[ngClass]="{ 'p-borda': !personagem, 
+			'p-selecionado': animService.P_ELFO_VERDE == personagem }"
+		(click)="selecionarPersonagem(animService.P_ELFO_VERDE)">
+		<img src="/assets/sprites/elfo-verde.png">
+	</div>
+	<div class="personagem"
+		[ngClass]="{ 'p-borda': !personagem, 
+			'p-selecionado': animService.P_FADA_VERMELHA == personagem }"
+		(click)="selecionarPersonagem(animService.P_FADA_VERMELHA)">
+		<img src="/assets/sprites/fada-vermelha.png">
+	</div>
+	<p *ngIf="personagem">
+		Obtendo o seu adversário, aguarde ...
+	</p>
 </div>

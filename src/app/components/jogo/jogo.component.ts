@@ -25,6 +25,7 @@ export class JogoComponent implements AfterViewInit,
   perguntaAtual: any;
   msgPopup: string;
   mostrarPopup: boolean;
+  nomeJogador: string;
 
   constructor(
   	private animacaoService: AnimacaoService,
@@ -32,6 +33,13 @@ export class JogoComponent implements AfterViewInit,
     private router: Router) {}
 
   ngOnInit() {
+    this.afAuth.authState.subscribe(authState => {
+      if (authState) { 
+        this.nomeJogador = authState.email.split('@')[0];
+      } else {
+        this.router.navigate(['/']);
+      }
+    });
   	this.vezJogar = 0; // jogador 1
   	this.placar = [
   		{ acertos: 0 }, 
@@ -44,15 +52,7 @@ export class JogoComponent implements AfterViewInit,
   }
 
   ngAfterViewInit() {
-    this.afAuth.authState.subscribe(authState => {
-      if (authState) { 
-        this.iniciarJogo(authState.email.split('@')[0]);
-      } else {
-        //window.location.href = window.location.href
-          //.replace('/jogo', '');
-        this.router.navigate(['/']);
-      }
-    });
+    setTimeout(() => this.iniciarJogo(this.nomeJogador), 500);
   }
 
   iniciarJogo(nome: string) {
@@ -63,7 +63,8 @@ export class JogoComponent implements AfterViewInit,
       this.animacaoService.P_FADA_VERMELHA
     ];
     this.animacaoService.iniciarAnimacao([
-      avatares[Math.floor(Math.random() * 4)], 
+      //avatares[Math.floor(Math.random() * 4)], 
+      sessionStorage['qf.jogador1'],
       avatares[Math.floor(Math.random() * 4)]
     ], 5, 150, nome, 'Jogador 2');
   }
