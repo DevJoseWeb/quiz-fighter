@@ -9,7 +9,7 @@ export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'pre-jogo', component: PreJogoComponent },
-  { path: 'jogo', component: JogoComponent },
+  { path: 'jogo/:id', component: JogoComponent },
 ];
 
 @NgModule({

@@ -133,3 +133,11 @@
 .btnPopup:hover {
 	background-image: url("/assets/botoes/hover-150.png");
 }
+
+.game {
+	width: 400px;
+	height: 200px;
+	background-image: url("/assets/backgrounds/quiz-background.png");
+	background-repeat: no-repeat;
+	background-color: #FFC;
+}

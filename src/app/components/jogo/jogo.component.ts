@@ -2,9 +2,14 @@ import {
   Component, AfterViewInit, OnInit, OnDestroy 
 } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
-import { Router } from '@angular/router';
+import { 
+  AngularFirestore, AngularFirestoreDocument 
+} from 'angularfire2/firestore';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
 
 import { AnimacaoService } from '../../services';
+import { Jogo } from '../../models';
 
 @Component({
   selector: 'app-jogo',
@@ -26,20 +31,27 @@ export class JogoComponent implements AfterViewInit,
   msgPopup: string;
   mostrarPopup: boolean;
   nomeJogador: string;
+  jogoId: string;
+  jogoDoc: AngularFirestoreDocument<Jogo>;
+  jogoObserver: Observable<Jogo>;
+  jogo: Jogo;
+  aguardandoOponente: boolean;
 
   constructor(
   	private animacaoService: AnimacaoService,
     private afAuth: AngularFireAuth,
-    private router: Router) {}
+    private afs: AngularFirestore,
+    private router: Router,
+    private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.afAuth.authState.subscribe(authState => {
-      if (authState) { 
-        this.nomeJogador = authState.email.split('@')[0];
-      } else {
+      if (!authState) { 
         this.router.navigate(['/']);
       }
     });
+    this.jogoId = this.route.snapshot.paramMap.get('id');
+
   	this.vezJogar = 0; // jogador 1
   	this.placar = [
   		{ acertos: 0 }, 
@@ -49,24 +61,41 @@ export class JogoComponent implements AfterViewInit,
   	this.questaoSel = -1;
   	this.perguntas = this.obterPerguntas();
   	this.perguntaAtual = this.perguntas[this.questaoNum];
+
+    this.aguardandoOponente = true;
+    this.jogoDoc = this.afs.doc<Jogo>('jogos/' + this.jogoId);
+    this.jogoObserver = this.jogoDoc.valueChanges();
   }
 
   ngAfterViewInit() {
-    setTimeout(() => this.iniciarJogo(this.nomeJogador), 500);
+    this.jogoObserver.subscribe(jogo => {
+      console.log(JSON.stringify(jogo));
+      if (jogo.qtdJogadores == 2 && !this.jogo) {
+        this.jogo = jogo;
+        this.iniciarJogo();
+      }
+    });
   }
 
-  iniciarJogo(nome: string) {
-    const avatares = [
+  iniciarJogo() {
+    /*const avatares = [
       this.animacaoService.P_ARQUEIRA,
       this.animacaoService.P_ELFO_AZUL,
       this.animacaoService.P_ELFO_VERDE,
       this.animacaoService.P_FADA_VERMELHA
-    ];
-    this.animacaoService.iniciarAnimacao([
-      //avatares[Math.floor(Math.random() * 4)], 
-      sessionStorage['qf.jogador1'],
+    ];*/
+    /*this.animacaoService.iniciarAnimacao([
+      avatares[Math.floor(Math.random() * 4)], 
       avatares[Math.floor(Math.random() * 4)]
-    ], 5, 150, nome, 'Jogador 2');
+    ], 5, 150, nome, 'Jogador 2');*/
+    this.animacaoService.iniciarAnimacao([
+        this.jogo.jogador1.personagem, 
+        this.jogo.jogador2.personagem,
+      ], 5, 150, 
+      this.jogo.jogador1.nome, 
+      this.jogo.jogador2.nome
+    );
+    this.aguardandoOponente = false;
   }
 
   ngOnDestroy() {
