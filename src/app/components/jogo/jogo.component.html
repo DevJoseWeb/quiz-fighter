@@ -30,8 +30,9 @@
 	<div 
 		class="popup"
 		[ngStyle]="{'display': aguardandoOponente ? 'block' : 'none'}">
-		<br /><br/>
-		<p>Aguarde o seu oponente...</p>
+		<br />
+		<p>Aguarde o seu oponente</p>
+		<img src="/assets/loading.gif">
 	</div>
 </div>
 <div id="game" [ngClass]="{game: !jogo}"></div>

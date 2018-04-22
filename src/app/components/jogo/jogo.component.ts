@@ -78,16 +78,6 @@ export class JogoComponent implements AfterViewInit,
   }
 
   iniciarJogo() {
-    /*const avatares = [
-      this.animacaoService.P_ARQUEIRA,
-      this.animacaoService.P_ELFO_AZUL,
-      this.animacaoService.P_ELFO_VERDE,
-      this.animacaoService.P_FADA_VERMELHA
-    ];*/
-    /*this.animacaoService.iniciarAnimacao([
-      avatares[Math.floor(Math.random() * 4)], 
-      avatares[Math.floor(Math.random() * 4)]
-    ], 5, 150, nome, 'Jogador 2');*/
     this.animacaoService.iniciarAnimacao([
         this.jogo.jogador1.personagem, 
         this.jogo.jogador2.personagem,
