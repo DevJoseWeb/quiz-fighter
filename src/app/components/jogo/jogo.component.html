@@ -1,6 +1,5 @@
 <div class="quiz">
 	<div class="logo"></div>
-	<!--<p>Vez: {{ jogadores[vezJogar].nome }}</p>-->
 	<p class="pergunta">
 		{{ perguntaAtual.questao }}
 	</p>
@@ -17,7 +16,7 @@
 			'btnInativo': questaoSel < 0 }"
 		(click)="confirmar($event)" 
 		[disabled]="questaoSel < 0">
-		Confirmar<!--Aguarde a sua vez-->
+		Confirmar
 	</button>
 	<div 
 		class="popup"

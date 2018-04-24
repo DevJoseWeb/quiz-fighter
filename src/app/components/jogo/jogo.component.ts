@@ -19,18 +19,17 @@ import { Jogo } from '../../models';
 export class JogoComponent implements AfterViewInit, 
     OnInit, OnDestroy {
 
-  readonly MSG_CORRETA = 'Certa resposta!';
+  readonly MSG_CORRETA   = 'Certa resposta!';
   readonly MSG_INCORRETA = 'Resposta incorreta.';
-  readonly NUM_QUESTOES = 5;
-  vezJogar: number;
-  placar: any;
-  questaoNum: number;
-  questaoSel: number;
-  perguntas: any;
+  readonly NUM_QUESTOES  = 5;
+  readonly JOGADOR_1 = 0;
+  readonly JOGADOR_2 = 1;
+
   perguntaAtual: any;
-  msgPopup: string;
+  perguntas: any;
   mostrarPopup: boolean;
-  nomeJogador: string;
+  msgPopup: string;
+  
   jogoId: string;
   jogoDoc: AngularFirestoreDocument<Jogo>;
   jogoObserver: Observable<Jogo>;
@@ -51,16 +50,8 @@ export class JogoComponent implements AfterViewInit,
       }
     });
     this.jogoId = this.route.snapshot.paramMap.get('id');
-
-  	this.vezJogar = 0; // jogador 1
-  	this.placar = [
-  		{ acertos: 0 }, 
-  		{ acertos: 0 }
-  	];
-  	this.questaoNum = 0;
-  	this.questaoSel = -1;
   	this.perguntas = this.obterPerguntas();
-  	this.perguntaAtual = this.perguntas[this.questaoNum];
+  	this.perguntaAtual = this.perguntas[0];
 
     this.aguardandoOponente = true;
     this.jogoDoc = this.afs.doc<Jogo>('jogos/' + this.jogoId);
@@ -69,15 +60,21 @@ export class JogoComponent implements AfterViewInit,
 
   ngAfterViewInit() {
     this.jogoObserver.subscribe(jogo => {
+      console.log("NOVO STREAM DE JOGO UPDATED...")
       console.log(JSON.stringify(jogo));
+      if (this.jogo) {
+        console.log('Atualizando status do jogo...');
+        this.jogo = jogo;
+        this.atualizarJogo();
+      }
       if (jogo.qtdJogadores == 2 && !this.jogo) {
         this.jogo = jogo;
-        this.iniciarJogo();
+        this.iniciarAnimacao();
       }
     });
   }
 
-  iniciarJogo() {
+  iniciarAnimacao() {
     this.animacaoService.iniciarAnimacao([
         this.jogo.jogador1.personagem, 
         this.jogo.jogador2.personagem,
@@ -96,28 +93,58 @@ export class JogoComponent implements AfterViewInit,
   }
 
   selecionarOpcao(opcaoNum: number) {
-  	this.questaoSel = opcaoNum;
+  	this.jogo.questaoSel = opcaoNum;
+    //TODO atualizar entidade aqui ???
   }
 
   confirmar(event: any) {
   	event.preventDefault();
-  	if (this.perguntaAtual.correta == this.questaoSel) {
-  		this.placar[this.vezJogar].acertos++;
+  	if (this.perguntaAtual.correta == this.jogo.questaoSel) {
+      if (this.jogo.vezJogar == this.JOGADOR_1) {
+  		  this.jogo.placar.jogador1.acertos++;
+      } else {
+        this.jogo.placar.jogador2.acertos++;
+      }
   		this.msgPopup = this.MSG_CORRETA;
-  		this.animacaoService.atacar(this.vezJogar);
+  		this.animacaoService.atacar(this.jogo.vezJogar);
   	} else {
   		this.msgPopup = this.MSG_INCORRETA;
   	}
 
-  	if (this.placar[0].acertos == 5) 
-  		this.msgPopup = 'JOGADOR 1 VENCEU!!!';
-  	if (this.placar[1].acertos == 5) 
-  		this.msgPopup = 'JOGADOR 2 VENCEU!!!';
+  	if (this.jogo.placar.jogador1.acertos == 5) {
+  		this.msgPopup = this.jogo.jogador1.nome + ' venceu!';
+    }
+  	if (this.jogo.placar.jogador2.acertos == 5) {
+  		this.msgPopup = this.jogo.jogador2.nome + ' venceu!';
+    }
   	this.exibirPopup();
 
-  	this.vezJogar = (this.vezJogar == 0) ? 1 : 0;
-  	this.questaoSel = -1;
-  	this.perguntaAtual = this.perguntas[++this.questaoNum];
+  	this.jogo.vezJogar = (this.jogo.vezJogar == this.JOGADOR_1) ? 
+      this.JOGADOR_2 : this.JOGADOR_1;
+    this.jogo.questaoCorreta = (
+      this.perguntaAtual.correta == this.jogo.questaoSel);
+  	this.jogo.questaoSel = -1;
+  	this.perguntaAtual = this.perguntas[++this.jogo.questaoNum];
+    this.jogoDoc.update(this.jogo);
+  }
+
+  atualizarJogo() {
+    if (this.jogo.questaoCorreta) {
+      this.msgPopup = this.MSG_CORRETA;
+      const jogadorAnterior = (this.jogo.vezJogar == this.JOGADOR_1) ? 
+        this.JOGADOR_2 : this.JOGADOR_1;
+      this.animacaoService.atacar(jogadorAnterior);
+    } else {
+      this.msgPopup = this.MSG_INCORRETA;
+    }
+    if (this.jogo.placar.jogador1.acertos == 5) {
+      this.msgPopup = this.jogo.jogador1.nome + ' venceu!';
+    }
+    if (this.jogo.placar.jogador2.acertos == 5) {
+      this.msgPopup = this.jogo.jogador2.nome + ' venceu!';
+    }
+    this.exibirPopup();
+    this.perguntaAtual = this.perguntas[this.jogo.questaoNum];
   }
 
   exibirPopup() {
@@ -129,7 +156,14 @@ export class JogoComponent implements AfterViewInit,
   }
 
   selecionado(index: number) {
-  	return index == this.questaoSel;
+  	return index == this.jogo.questaoSel;
+  }
+
+  get questaoSel() {
+    if (!this.jogo) {
+      return -1;
+    }
+    return this.jogo.questaoSel;
   }
 
   obterPerguntas() {

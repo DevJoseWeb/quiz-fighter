@@ -18,6 +18,8 @@ import { Jogo } from '../../models';
 })
 export class PreJogoComponent implements OnInit {
 
+  readonly JOGADOR_1 = 0;
+  readonly NENHUMA_OPCAO_SEL = -1;
   personagem: string;
   jogos: Observable<Jogo[]>;
   jogo: Jogo;
@@ -47,14 +49,14 @@ export class PreJogoComponent implements OnInit {
   		return;
   	}
   	this.personagem = personagem; 	
-	this.jogos.subscribe(jogos => {
-		console.log(jogos.length);
-		if (jogos.length > 0 && !this.jogo) {
-			console.log('Encontrado jogo: ' + JSON.stringify(jogos[0]));
-			this.jogo = jogos[0];
-			this.iniciarJogo();
-		} 
-	});
+  	this.jogos.subscribe(jogos => {
+  		console.log(jogos.length);
+  		if (jogos.length > 0 && !this.jogo) {
+  			console.log('Encontrado jogo: ' + JSON.stringify(jogos[0]));
+  			this.jogo = jogos[0];
+  			this.iniciarJogo();
+  		} 
+  	});
   }
 
   iniciarJogo() {
@@ -68,7 +70,15 @@ export class PreJogoComponent implements OnInit {
   		this.jogo.jogador1 = dadosJogador;
   	} else {
   		this.jogo.jogador2 = dadosJogador;
+      this.jogo.vezJogar = this.JOGADOR_1;
+      this.jogo.placar = {
+        jogador1: { acertos: 0 }, 
+        jogador2: { acertos: 0 }
+      };
+      this.jogo.questaoNum = 0;
+      this.jogo.questaoSel = this.NENHUMA_OPCAO_SEL;
   	}
+
   	this.jogo.qtdJogadores++;
   	this.jogo.dataAtualizacao = new Date().getTime();
   	console.log(JSON.stringify(this.jogo));
