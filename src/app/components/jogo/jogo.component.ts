@@ -269,7 +269,7 @@ export class JogoComponent implements AfterViewInit,
   			correta: 3
   		}
   	];
-  	questoes.sort(() => 0.5 - Math.random());
+  	//questoes.sort(() => 0.5 - Math.random());
   	return questoes;
   }
 

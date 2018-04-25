@@ -37,12 +37,11 @@ export class LoginComponent implements OnInit {
   logarGoogle() {
     this.afAuth.auth.signInWithPopup(
       new firebase.auth.GoogleAuthProvider())
-      .then(value => this.router.navigate([this.PRE_JOGO_PATH]))
-      .catch(err => {
-        console.log('Erro:', err.message);
-        this.snackBar.open('Problema ao autenticar no Google.', 
-        	"Erro", { duration: 5000 });
-      });
+      .then(res  => this.router.navigate([this.PRE_JOGO_PATH]))
+      .catch(err => this.snackBar.open(
+              'Problema ao autenticar no Google.', 
+        	    'Erro', { duration: 5000 })
+    );
   }
 
   logarEmail() {
@@ -52,20 +51,11 @@ export class LoginComponent implements OnInit {
     const dados = this.form.value;
     this.afAuth.auth
       .signInWithEmailAndPassword(dados.email, dados.senha)
-      .then(value => this.router.navigate([this.PRE_JOGO_PATH]))
-      .catch(err => {
-        console.log('Erro: ', err.message);
-        this.snackBar.open("Usuário/senha inválido(s)", 
-        	"Erro", { duration: 5000 });
-      });
-  }
-
-  exibirCadastro() {
-  	this.cadastro = true;
-  }
-
-  exibirLogin() {
-  	this.cadastro = false;
+      .then(res  => this.router.navigate([this.PRE_JOGO_PATH]))
+      .catch(err => this.snackBar.open(
+              'Usuário/senha inválido(s)', 
+        	    'Erro', { duration: 5000 })
+    );
   }
 
   cadastrarEmail() {
@@ -75,12 +65,19 @@ export class LoginComponent implements OnInit {
     const dados = this.form.value;
   	this.afAuth.auth.createUserAndRetrieveDataWithEmailAndPassword(
   	  dados.email, dados.senha)
-  	  .then(value => this.router.navigate([this.PRE_JOGO_PATH]))
-  	  .catch(err => {
-        console.log('Erro: ', err.message);
-        this.snackBar.open("Problema ao cadastrar email.", 
-        	"Erro", { duration: 5000 });
-      });
+  	  .then(res  => this.router.navigate([this.PRE_JOGO_PATH]))
+  	  .catch(err => this.snackBar.open(
+              'Problema ao cadastrar email.', 
+        	    'Erro', { duration: 5000 })
+    );
+  }
+
+  exibirCadastro() {
+    this.cadastro = true;
+  }
+
+  exibirLogin() {
+    this.cadastro = false;
   }
 
   sair() {

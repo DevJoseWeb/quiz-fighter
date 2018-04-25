@@ -52,18 +52,5 @@
       {{ user.email.split('@')[0] }}!</h1>
       <button mat-button color="primary" (click)="sair()">Sair</button>
     </div>
-	<!--
-	<div *ngIf="afAuth.authState | async as user; else exibirLogin">
-      <h1>Olá {{ user.displayName }} 
-      {{ user.email.split('@')[0] }}!</h1>
-      <button mat-button color="primary" (click)="sair()">Sair</button>
-    </div>
-    <ng-template #exibirLogin>
-      <p>Login:</p>
-      <button mat-button color="warn" 
-      	(click)="loginGoogle()">Login com Google</button>
-    </ng-template>
-    <br />
-	<a mat-button color="primary" routerLink="/jogo">Jogo</a>
-	-->
+	
 </div>

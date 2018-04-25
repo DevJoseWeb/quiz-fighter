@@ -13,4 +13,5 @@ export interface Jogo {
   	questaoNum: number;
   	questaoSel: number;
   	questaoCorreta: boolean;
+  	
 }

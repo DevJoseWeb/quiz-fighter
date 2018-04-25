@@ -20,9 +20,14 @@ export class PreJogoComponent implements OnInit {
 
   readonly JOGADOR_1 = 0;
   readonly NENHUMA_OPCAO_SEL = -1;
+  readonly JOGOS_COLLECTION = 'jogos';
+  readonly JOGOS_QTD_JOGADORES = 'qtdJogadores';
+  readonly JOGO_DOCUMENT = 'jogo';
+
   personagem: string;
   jogos: Observable<Jogo[]>;
   jogo: Jogo;
+  jogoDoc: AngularFirestoreDocument<Jogo>;
   nomeJogador: string;
 
   constructor(
@@ -32,16 +37,25 @@ export class PreJogoComponent implements OnInit {
   	private afAuth: AngularFireAuth) {}
 
   ngOnInit() {
-  	this.afAuth.authState.subscribe(authState => {
-      if (authState) { 
+    this.validarAutenticacao();
+  	this.obterJogosDisponiveis();
+  }
+
+  validarAutenticacao() {
+    this.afAuth.authState.subscribe(authState => {
+      if (authState) {
         this.nomeJogador = authState.email.split('@')[0];
       } else {
         this.router.navigate(['/']);
       }
     });
-  	this.jogos = this.afs.collection<Jogo>('jogos', 
-  		ref => ref.where('qtdJogadores', '<=', 1))
-  		.valueChanges();
+  }
+
+  obterJogosDisponiveis() {
+    this.jogos = this.afs.collection<Jogo>(
+      this.JOGOS_COLLECTION, 
+      ref => ref.where(this.JOGOS_QTD_JOGADORES, '<=', 1))
+    .valueChanges();
   }
 
   selecionarPersonagem(personagem: string) {
@@ -50,9 +64,8 @@ export class PreJogoComponent implements OnInit {
   	}
   	this.personagem = personagem; 	
   	this.jogos.subscribe(jogos => {
-  		console.log(jogos.length);
   		if (jogos.length > 0 && !this.jogo) {
-  			console.log('Encontrado jogo: ' + JSON.stringify(jogos[0]));
+        //TODO iterar e obter o primeiro jogo disponível...
   			this.jogo = jogos[0];
   			this.iniciarJogo();
   		} 
@@ -60,33 +73,43 @@ export class PreJogoComponent implements OnInit {
   }
 
   iniciarJogo() {
-  	console.log('iniciarJogo...');
-  	console.log(JSON.stringify(this.jogo));
-  	const dadosJogador = { 
-		nome: this.nomeJogador, 
-		personagem: this.personagem 
-	};
-  	if (this.jogo.qtdJogadores == 0) {
-  		this.jogo.jogador1 = dadosJogador;
-  	} else {
-  		this.jogo.jogador2 = dadosJogador;
-      this.jogo.vezJogar = this.JOGADOR_1;
-      this.jogo.placar = {
-        jogador1: { acertos: 0 }, 
-        jogador2: { acertos: 0 }
-      };
-      this.jogo.questaoNum = 0;
-      this.jogo.questaoSel = this.NENHUMA_OPCAO_SEL;
-  	}
+    this.popularDadosJogo();
+    this.atualizarDadosJogoFirebase();
+  }
 
-  	this.jogo.qtdJogadores++;
-  	this.jogo.dataAtualizacao = new Date().getTime();
-  	console.log(JSON.stringify(this.jogo));
+  popularDadosJogo() {
+    const dadosJogador = { 
+      nome: this.nomeJogador, 
+      personagem: this.personagem 
+    };
+    if (this.jogo.qtdJogadores == 0) {
+      this.jogo.jogador1 = dadosJogador;
+    } else {
+      this.jogo.jogador2 = dadosJogador;
+      this.definirDadosPadraoJogo();
+    }
+    this.jogo.qtdJogadores++;
+    this.jogo.dataAtualizacao = new Date().getTime();
+  }
 
-  	const jogoDoc: AngularFirestoreDocument<Jogo> = 
-  		this.afs.doc<Jogo>('jogos/' + this.jogo.id);
-  	jogoDoc.update(this.jogo)
-  		.then(res => this.router.navigate(['/jogo/' + this.jogo.id]));
+  definirDadosPadraoJogo() {
+    this.jogo.vezJogar = this.JOGADOR_1;
+    this.jogo.placar = {
+      jogador1: { acertos: 0 }, 
+      jogador2: { acertos: 0 }
+    };
+    this.jogo.questaoNum = 0;
+    this.jogo.questaoSel = this.NENHUMA_OPCAO_SEL;
+  }
+
+  atualizarDadosJogoFirebase() {
+    this.jogoDoc = this.afs.doc<Jogo>(
+      this.JOGOS_COLLECTION + '/' + this.jogo.id);
+    this.jogoDoc.update(this.jogo)
+      .then(res => this.router.navigate(
+        ['/' + this.JOGO_DOCUMENT + '/' + this.jogo.id]))
+      .catch(err => console.log('TODO tratar erro aqui...')
+    );
   }
 
 }
