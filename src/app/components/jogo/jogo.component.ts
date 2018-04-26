@@ -50,9 +50,9 @@ export class JogoComponent implements AfterViewInit,
       }
     });
     this.jogoId = this.route.snapshot.paramMap.get('id');
+
   	this.perguntas = this.obterPerguntas();
   	this.perguntaAtual = this.perguntas[0];
-
     this.aguardandoOponente = true;
     this.jogoDoc = this.afs.doc<Jogo>('jogos/' + this.jogoId);
     this.jogoObserver = this.jogoDoc.valueChanges();

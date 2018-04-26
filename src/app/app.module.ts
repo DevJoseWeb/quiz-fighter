@@ -19,7 +19,7 @@ import { AppComponent } from './app.component';
 import { 
   JogoComponent, LoginComponent, PreJogoComponent
 } from './components';
-import { AnimacaoService } from './services';
+import { AnimacaoService, PreJogoService } from './services';
 import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
@@ -43,7 +43,8 @@ import { AppRoutingModule } from './app-routing.module';
     ReactiveFormsModule
   ],
   providers: [
-  	AnimacaoService
+  	AnimacaoService,
+    PreJogoService
   ],
   bootstrap: [ AppComponent ]
 })
