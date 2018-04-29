@@ -24,16 +24,21 @@
 		<br />
 		<img src="/assets/loading.gif">
 	</p>
-	<div 
-		class="popup"
+	<div class="popup"
 		[ngStyle]="{'display': mostrarPopup ? 'block' : 'none'}">
 		<p>{{ msgPopup }}</p>
-		<div class="btnPopup" (click)="fecharPopup()">
-			OK
+		<div class="btnPopup" 
+			(click)="fecharPopup()" 
+			*ngIf="!fimJogo">
+			Continuar
+		</div>
+		<div class="btnPopup" 
+			(click)="novoJogo()" 
+			*ngIf="fimJogo">
+			Novo Jogo
 		</div>
 	</div>
-	<div 
-		class="popup"
+	<div class="popup"
 		[ngStyle]="{'display': aguardandoOponente ? 'block' : 'none'}">
 		<br />
 		<p>Aguarde o seu oponente</p>

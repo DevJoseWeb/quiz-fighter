@@ -33,7 +33,7 @@ export class AnimacaoService {
   	this.game = new Phaser.Game({
 	    type: Phaser.AUTO,
 	    width: this.WIDTH,
-	    height: this.HEIGHT, // 550(total) - 200(Jogo) = 350(Principal)
+	    height: this.HEIGHT,
 	    scene: {
 	    	key: this.SCENE_PRINCIPAL,
 	        preload: this.preload,

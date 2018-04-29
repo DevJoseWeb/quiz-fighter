@@ -38,6 +38,7 @@ export class PreJogoService {
   iniciarJogo() {
     this.popularDadosJogo();
     this.atualizarDadosJogoFirebase();
+    this.personagem = null;
   }
 
   popularDadosJogo() {

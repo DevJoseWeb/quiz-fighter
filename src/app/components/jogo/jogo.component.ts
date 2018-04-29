@@ -32,7 +32,6 @@ export class JogoComponent implements AfterViewInit,
 
   ngAfterViewInit() {
     this.jogoService.iniciarJogo();
-    console.log('TESTE: ' + this.jogoService.aguardarJogadaAdversario());
   }
 
   ngOnDestroy() {
@@ -44,7 +43,6 @@ export class JogoComponent implements AfterViewInit,
 
   selecionarOpcao(opcaoNum: number) {
   	this.jogoService.jogo.questaoSel = opcaoNum;
-    //TODO atualizar entidade aqui ???
   }
 
   confirmar(event: any) {
@@ -54,6 +52,10 @@ export class JogoComponent implements AfterViewInit,
 
   fecharPopup() {
   	this.jogoService.mostrarPopup = false;
+  }
+
+  novoJogo() {
+    this.router.navigate(['/pre-jogo']);
   }
 
   selecionado(index: number) {
@@ -89,6 +91,10 @@ export class JogoComponent implements AfterViewInit,
 
   get aguardarJogadaAdversario() {
     return this.jogoService.aguardarJogadaAdversario();
+  }
+
+  get fimJogo() {
+    return this.jogoService.fimJogo;
   }
 
 }

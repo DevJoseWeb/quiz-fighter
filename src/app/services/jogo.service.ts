@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { AngularFireAuth } from 'angularfire2/auth';
 import { 
   AngularFirestore, AngularFirestoreDocument 
 } from 'angularfire2/firestore';
-import { AngularFireAuth } from 'angularfire2/auth';
-import { Observable } from 'rxjs/Observable';
 
 import { Jogo } from '../models';
 import { AnimacaoService } from './animacao.service';
@@ -13,7 +13,9 @@ export class JogoService {
 
   readonly MSG_CORRETA   = 'Certa resposta!';
   readonly MSG_INCORRETA = 'Resposta incorreta.';
+  readonly MSG_VENCEU = ' venceu.';
   readonly NUM_QUESTOES  = 5;
+  readonly QTD_PONTOS_TOTAIS  = 150;
   readonly JOGADOR_1 = 0;
   readonly JOGADOR_2 = 1;
   readonly NENHUMA_SELECAO = -1;
@@ -22,10 +24,10 @@ export class JogoService {
   perguntaAtual: any;
   perguntas: any;
   msgPopup: string;
-  aguardandoOponente: boolean = true;
-  mostrarPopup: boolean = false;
+  aguardandoOponente: boolean;
+  mostrarPopup: boolean;
   nomeJogador: string;
-  
+  fimJogo: boolean;
   jogoDoc: AngularFirestoreDocument<Jogo>;
   jogoObserver: Observable<Jogo>;
   jogo: Jogo;
@@ -36,6 +38,9 @@ export class JogoService {
   	private afAuth: AngularFireAuth) {}
 
   iniciarRecursos(jogoId: string) {
+  	this.aguardandoOponente = true;
+  	this.mostrarPopup = false;
+  	this.fimJogo = false;
   	this.perguntas = this.obterPerguntas();
   	this.perguntaAtual = this.perguntas[0];
     this.jogoDoc = this.afs.doc<Jogo>(this.JOGOS_DOC_PATH + jogoId);
@@ -43,12 +48,11 @@ export class JogoService {
   }
 
   iniciarJogo() {
-  	this.afAuth.authState.subscribe(authState => {
-  	  if (authState) {
-        this.nomeJogador = authState.email.split('@')[0];
-      }
-    });
+  	this.obterNomeJogador();
     this.jogoObserver.subscribe(jogo => {
+      if (this.fimJogo) {
+      	return;
+      }
    	  if (this.jogo) {
         this.jogo = jogo;
         this.atualizarJogo();
@@ -62,11 +66,21 @@ export class JogoService {
     });
   }
 
+  obterNomeJogador() {
+  	this.afAuth.authState.subscribe(authState => {
+  	  if (authState) {
+        this.nomeJogador = authState.email.split('@')[0];
+      }
+    });
+  }
+
   iniciarAnimacao() {
     this.animacaoService.iniciarAnimacao([
         this.jogo.jogador1.personagem, 
         this.jogo.jogador2.personagem,
-      ], 5, 150, 
+      ], 
+      this.NUM_QUESTOES, 
+      this.QTD_PONTOS_TOTAIS, 
       this.jogo.jogador1.nome, 
       this.jogo.jogador2.nome
     );
@@ -75,19 +89,50 @@ export class JogoService {
   atualizarJogo() {
     if (this.jogo.questaoCorreta) {
       this.msgPopup = this.MSG_CORRETA;
-      const jogadorAnterior = (this.jogo.vezJogar == this.JOGADOR_1) ? 
-        this.JOGADOR_2 : this.JOGADOR_1;
-      this.animacaoService.atacar(jogadorAnterior);
+      this.animacaoService.atacar(this.obterJogadorAnterior());
     } else {
       this.msgPopup = this.MSG_INCORRETA;
     }
-    if (this.jogo.placar.jogador1.acertos == this.NUM_QUESTOES) {
-      this.msgPopup = this.jogo.jogador1.nome + ' venceu!';
-    }
-    if (this.jogo.placar.jogador2.acertos == this.NUM_QUESTOES) {
-      this.msgPopup = this.jogo.jogador2.nome + ' venceu!';
-    }
+    this.verificarFimJogo();
     this.perguntaAtual = this.perguntas[this.jogo.questaoNum];
+  }
+
+  obterJogadorAnterior(): number {
+  	let jogadorAnterior: number = this.JOGADOR_1;
+  	if (this.jogo.vezJogar == this.JOGADOR_1) {
+      jogadorAnterior = this.JOGADOR_2;
+  	}
+  	return jogadorAnterior;
+  }
+
+  verificarFimJogo() {
+  	if (this.jogador1Venceu()) {
+      this.msgPopup = this.jogo.jogador1.nome + this.MSG_VENCEU;
+      this.fimJogo = true;
+    }
+    if (this.jogador2Venceu()) {
+      this.msgPopup = this.jogo.jogador2.nome + this.MSG_VENCEU;
+      this.fimJogo = true;
+    }
+    if (this.fimJogo) {
+	    this.jogo.vezJogar = this.JOGADOR_1;
+	    this.jogo.placar = {
+	      jogador1: { acertos: 0 }, 
+	      jogador2: { acertos: 0 }
+	    };
+	    this.jogo.questaoNum = 0;
+	    this.jogo.questaoSel = this.NENHUMA_SELECAO;
+	    this.jogo.qtdJogadores = 0;
+	    this.jogoDoc.update(this.jogo);
+    }
+  }
+
+  jogador1Venceu(): boolean {
+  	return (this.jogo.placar.jogador1.acertos == this.NUM_QUESTOES);
+  }
+
+  jogador2Venceu(): boolean {
+  	return (this.jogo.placar.jogador2.acertos == this.NUM_QUESTOES);
   }
 
   aguardarJogadaAdversario(): boolean {
@@ -102,6 +147,9 @@ export class JogoService {
   }
 
   confirmar() {
+  	if (this.fimJogo) {
+  		return;
+  	}
   	this.jogo.questaoCorreta = this.verificarQuestaoCorreta();
   	if (this.jogo.questaoCorreta) {
       this.atualizarPlacar();
@@ -111,6 +159,10 @@ export class JogoService {
   	this.jogo.questaoSel = this.NENHUMA_SELECAO;
   	this.perguntaAtual = this.perguntas[++this.jogo.questaoNum];
     this.jogoDoc.update(this.jogo);
+  }
+
+  verificarQuestaoCorreta(): boolean {
+  	return (this.perguntaAtual.correta == this.jogo.questaoSel);
   }
 
   atualizarPlacar() {
@@ -130,10 +182,6 @@ export class JogoService {
   			this.jogo.vezJogar = this.JOGADOR_1;
   			break;
   	}
-  }
-
-  verificarQuestaoCorreta(): boolean {
-  	return (this.perguntaAtual.correta == this.jogo.questaoSel);
   }
 
   obterPerguntas() {
