@@ -19,7 +19,9 @@ import { AppComponent } from './app.component';
 import { 
   JogoComponent, LoginComponent, PreJogoComponent
 } from './components';
-import { AnimacaoService, PreJogoService } from './services';
+import { 
+  AnimacaoService, PreJogoService, JogoService 
+} from './services';
 import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
@@ -44,7 +46,8 @@ import { AppRoutingModule } from './app-routing.module';
   ],
   providers: [
   	AnimacaoService,
-    PreJogoService
+    PreJogoService,
+    JogoService
   ],
   bootstrap: [ AppComponent ]
 })

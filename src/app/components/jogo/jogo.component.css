@@ -114,6 +114,11 @@
 	color: #910F14;
 }
 
+p {
+	color: #910F14;
+	font-size: 18px;
+}
+
 .btnPopup {
 	background-image: url("/assets/botoes/ativo-150.png");
 	background-repeat: no-repeat;

@@ -15,9 +15,15 @@
 		[ngClass]="{ 'btnConfirmar': questaoSel >= 0, 
 			'btnInativo': questaoSel < 0 }"
 		(click)="confirmar($event)" 
-		[disabled]="questaoSel < 0">
+		[disabled]="questaoSel < 0"
+		*ngIf="!aguardarJogadaAdversario">
 		Confirmar
 	</button>
+	<p *ngIf="aguardarJogadaAdversario">
+		Aguarde seu oponente jogar
+		<br />
+		<img src="/assets/loading.gif">
+	</p>
 	<div 
 		class="popup"
 		[ngStyle]="{'display': mostrarPopup ? 'block' : 'none'}">
