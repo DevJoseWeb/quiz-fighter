@@ -7,6 +7,8 @@ let numHitsTerminar: number;
 let totalPontos: number;
 let nomeJogador1: string;
 let nomeJogador2: string;
+let hitsAtualJog1: number;
+let hitsAtualJog2: number;
 
 @Injectable()
 export class AnimacaoService {
@@ -23,13 +25,15 @@ export class AnimacaoService {
   private game: Phaser.Game;
 
   iniciarAnimacao(jogadores: string[], hitsTerminar: number,
-  		pontosTotais: number, nomeJog1: string, 
-  		nomeJog2: string) {
+  		pontosTotais: number, nomeJog1: string, hitsAtualJ1: number,
+  		nomeJog2: string, hitsAtualJ2: number) {
   	personagens = jogadores;
   	numHitsTerminar = hitsTerminar;
   	totalPontos = pontosTotais;
   	nomeJogador1 = nomeJog1 ? nomeJog1.substr(0, 17) : nomeJog1;
   	nomeJogador2 = nomeJog2 ? nomeJog2.substr(0, 17) : nomeJog2;
+  	hitsAtualJog1 = hitsAtualJ1;
+  	hitsAtualJog2 = hitsAtualJ2;
   	this.game = new Phaser.Game({
 	    type: Phaser.AUTO,
 	    width: this.WIDTH,
@@ -41,7 +45,6 @@ export class AnimacaoService {
 	        update: this.update
 	    }
 	  });
-  	console.log(this.game);
   }
 
   preload() {
@@ -82,11 +85,11 @@ export class AnimacaoService {
 
   	scene.score = [{ 
   			jogador1: { 
-  				pontos: totalPontos, 
+  				pontos: totalPontos - hitsAtualJog1, 
   				forca: Math.ceil(totalPontos / numHitsTerminar) 
   			}}, { 
   			jogador2: { 
-  				pontos: totalPontos, 
+  				pontos: totalPontos - hitsAtualJog2, 
   				forca: Math.ceil(totalPontos / numHitsTerminar) 
   			}
   		}

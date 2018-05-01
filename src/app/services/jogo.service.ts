@@ -75,6 +75,10 @@ export class JogoService {
   }
 
   iniciarAnimacao() {
+    const forcaHit: number = Math.ceil(
+      this.QTD_PONTOS_TOTAIS / this.NUM_QUESTOES);
+
+    const pontosAtuaisJ1 =  
     this.animacaoService.iniciarAnimacao([
         this.jogo.jogador1.personagem, 
         this.jogo.jogador2.personagem,
@@ -82,7 +86,9 @@ export class JogoService {
       this.NUM_QUESTOES, 
       this.QTD_PONTOS_TOTAIS, 
       this.jogo.jogador1.nome, 
-      this.jogo.jogador2.nome
+      this.jogo.placar.jogador2.acertos * forcaHit,
+      this.jogo.jogador2.nome,
+      this.jogo.placar.jogador1.acertos * forcaHit
     );
   }
 
