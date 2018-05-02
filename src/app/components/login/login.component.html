@@ -46,11 +46,4 @@
 		</mat-list-item>
 	  </mat-list> 
 	</form>
-	
-	<div *ngIf="afAuth.authState | async as user; else exibirLogin2">
-      <h1>Olá {{ user.displayName }} 
-      {{ user.email.split('@')[0] }}!</h1>
-      <button mat-button color="primary" (click)="sair()">Sair</button>
-    </div>
-	
 </div>

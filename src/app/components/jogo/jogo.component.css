@@ -146,3 +146,17 @@ p {
 	background-repeat: no-repeat;
 	background-color: #FFC;
 }
+
+.novo-jogo {
+	position: absolute;
+	top: 90px;
+	left: 25px;
+	cursor: pointer;
+}
+
+.home {
+	position: absolute;
+	top: 90px;
+	left: 330px;
+	cursor: pointer;
+}

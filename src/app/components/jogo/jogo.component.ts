@@ -97,4 +97,8 @@ export class JogoComponent implements AfterViewInit,
     return this.jogoService.fimJogo;
   }
 
+  sair() {
+    this.afAuth.auth.signOut();
+  }
+
 }

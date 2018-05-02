@@ -44,4 +44,8 @@ export class PreJogoComponent implements OnInit {
     return this.preJogoService.personagem;
   }
 
+  sair() {
+    this.afAuth.auth.signOut();
+  }
+
 }

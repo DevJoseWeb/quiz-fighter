@@ -1,5 +1,11 @@
 <div class="quiz">
 	<div class="logo"></div>
+	<img src="/assets/botoes/home.png" 
+		class="home"
+		(click)="sair()">
+	<img src="/assets/botoes/left.png" 
+		class="novo-jogo"
+		(click)="novoJogo()">
 	<p class="pergunta">
 		{{ perguntaAtual.questao }}
 	</p>

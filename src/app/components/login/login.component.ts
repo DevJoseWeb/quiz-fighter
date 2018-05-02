@@ -23,6 +23,11 @@ export class LoginComponent implements OnInit {
     private snackBar: MatSnackBar) {}
 
   ngOnInit() {
+    this.afAuth.authState.subscribe(authState => {
+      if (authState) { 
+        this.router.navigate(['/pre-jogo']);
+      }
+    });
   	this.cadastro = false;
   	this.gerarForm();
   }
@@ -78,10 +83,6 @@ export class LoginComponent implements OnInit {
 
   exibirLogin() {
     this.cadastro = false;
-  }
-
-  sair() {
-    this.afAuth.auth.signOut();
   }
 
 }

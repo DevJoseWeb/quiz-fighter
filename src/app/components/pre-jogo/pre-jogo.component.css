@@ -48,3 +48,10 @@ p {
 	color: #910f14;
 	font-weight: bold;
 }
+
+.home {
+	position: absolute;
+	top: 90px;
+	left: 330px;
+	cursor: pointer;
+}
