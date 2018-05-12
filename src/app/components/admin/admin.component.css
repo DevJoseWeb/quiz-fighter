@@ -1,0 +1,42 @@
+.admin {
+	background-image: url("/assets/backgrounds/quiz-background.png");
+	background-color: #FFC;
+	width: 400px;
+	height: 600px;
+	text-align: center;
+	position: relative;
+}
+
+.logo {
+	width: 400px;
+	height: 135px;
+	background-image: url("/assets/backgrounds/logo.png");
+	background-repeat: no-repeat;
+}
+
+.titulo {
+	background-image: url("/assets/backgrounds/pergunta-background.png");
+	background-repeat: no-repeat;
+	color: #FFF;
+	width: 400px;
+	height: 30px;
+	text-align: center;
+	font-size: 20px;
+	padding-top: 9px;
+}
+
+p {
+	color: #910f14;
+	font-weight: bold;
+}
+
+.home {
+	position: absolute;
+	top: 90px;
+	left: 330px;
+	cursor: pointer;
+}
+
+.perguntas-container {
+	margin: 5px;
+}

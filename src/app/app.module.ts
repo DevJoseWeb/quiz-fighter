@@ -7,7 +7,9 @@ import {
   MatInputModule,
   MatButtonModule,
   MatListModule,
-  MatSnackBarModule
+  MatSnackBarModule,
+  MatTableModule,
+  MatPaginatorModule
 } from '@angular/material';
 import { AngularFireModule } from 'angularfire2';
 import { environment } from '../environments/environment';
@@ -17,7 +19,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { 
-  JogoComponent, LoginComponent, PreJogoComponent
+  JogoComponent, LoginComponent, PreJogoComponent, AdminComponent
 } from './components';
 import { 
   AnimacaoService, PreJogoService, JogoService 
@@ -29,7 +31,8 @@ import { AppRoutingModule } from './app-routing.module';
     AppComponent,
     JogoComponent,
     LoginComponent,
-    PreJogoComponent
+    PreJogoComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule,
@@ -38,6 +41,8 @@ import { AppRoutingModule } from './app-routing.module';
     MatButtonModule,
     MatListModule,
     MatSnackBarModule,
+    MatTableModule,
+    MatPaginatorModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,

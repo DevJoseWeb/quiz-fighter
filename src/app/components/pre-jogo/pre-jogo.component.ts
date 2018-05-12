@@ -13,9 +13,9 @@ import { Jogo } from '../../models';
 export class PreJogoComponent implements OnInit {
 
   constructor(
+    animService: AnimacaoService,
   	private router: Router,
   	private afAuth: AngularFireAuth,
-    private animService: AnimacaoService,
     private preJogoService: PreJogoService) {}
 
   ngOnInit() {
