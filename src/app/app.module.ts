@@ -9,7 +9,8 @@ import {
   MatListModule,
   MatSnackBarModule,
   MatTableModule,
-  MatPaginatorModule
+  MatPaginatorModule,
+  MatDialogModule
 } from '@angular/material';
 import { AngularFireModule } from 'angularfire2';
 import { environment } from '../environments/environment';
@@ -19,10 +20,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { 
-  JogoComponent, LoginComponent, PreJogoComponent, AdminComponent
+  JogoComponent, LoginComponent, PreJogoComponent, 
+  AdminComponent, ConfirmarRestauracaoDialog
 } from './components';
 import { 
-  AnimacaoService, PreJogoService, JogoService 
+  AnimacaoService, PreJogoService, JogoService, PerguntasService 
 } from './services';
 import { AppRoutingModule } from './app-routing.module';
 
@@ -32,7 +34,8 @@ import { AppRoutingModule } from './app-routing.module';
     JogoComponent,
     LoginComponent,
     PreJogoComponent,
-    AdminComponent
+    AdminComponent,
+    ConfirmarRestauracaoDialog
   ],
   imports: [
     BrowserModule,
@@ -43,6 +46,7 @@ import { AppRoutingModule } from './app-routing.module';
     MatSnackBarModule,
     MatTableModule,
     MatPaginatorModule,
+    MatDialogModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
@@ -52,8 +56,10 @@ import { AppRoutingModule } from './app-routing.module';
   providers: [
   	AnimacaoService,
     PreJogoService,
-    JogoService
+    JogoService,
+    PerguntasService
   ],
+  entryComponents: [ ConfirmarRestauracaoDialog ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

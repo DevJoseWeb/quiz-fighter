@@ -3,21 +3,41 @@
 	<img src="/assets/botoes/home.png" 
 		class="home"
 		(click)="sair()">
-	<p class="titulo">Cadastro de perguntas</p>
-
 	<div class="perguntas-container">
 	  <mat-table [dataSource]="dataSource">
 	    <ng-container matColumnDef="pergunta">
-	      <mat-header-cell *matHeaderCellDef>Pergunta</mat-header-cell>
-	      <mat-cell *matCellDef="let element">{{element}}</mat-cell>
+	      <mat-header-cell *matHeaderCellDef>Perguntas</mat-header-cell>
+	      <mat-cell *matCellDef="let pergunta">
+	      	{{ pergunta.questao }}
+	      </mat-cell>
+	    </ng-container>
+	    <ng-container matColumnDef="opcoes">
+	      <mat-header-cell *matHeaderCellDef>Opções</mat-header-cell>
+	      <mat-cell *matCellDef="let pergunta">
+	      	{{ pergunta.opcoes }}
+	      </mat-cell>
+	    </ng-container>
+	    <ng-container matColumnDef="correta">
+	      <mat-header-cell *matHeaderCellDef>Correta</mat-header-cell>
+	      <mat-cell *matCellDef="let pergunta">
+	      	{{ pergunta.opcoes[pergunta.correta] }}
+	      </mat-cell>
 	    </ng-container>
 	    <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
 	    <mat-row *matRowDef="let row; columns: colunas;"></mat-row>
 	  </mat-table>
 	  <mat-paginator 
 	    #paginator
-        [pageSize]="4">
+        [pageSize]="5"
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        [showFirstLastButtons]="true">
   	  </mat-paginator>
 	</div>
-	
+	<div>
+		<button mat-button color="primary">Nova pergunta</button>
+		<button mat-button color="warn"
+			(click)="confirmarRestauracaoDados()">
+			Restaurar dados
+		</button>
+	</div>
 </div>

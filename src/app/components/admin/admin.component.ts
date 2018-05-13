@@ -2,8 +2,12 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { 
-	MatTableDataSource, MatPaginator 
+	MatTableDataSource, MatPaginator, 
+	MatDialog, MatDialogRef, MAT_DIALOG_DATA 
 } from '@angular/material';
+
+import { PerguntasService } from '../../services';
+import { Pergunta } from '../../models';
 
 @Component({
   selector: 'app-admin',
@@ -12,22 +16,24 @@ import {
 })
 export class AdminComponent implements OnInit {
 
-  colunas = ['pergunta'];
-  dataSource: MatTableDataSource<string[]>;
+  colunas = ['pergunta', 'opcoes', 'correta'];
+  dataSource: MatTableDataSource<Pergunta>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  dialogRef: MatDialogRef<ConfirmarRestauracaoDialog>;
 
   constructor(
   	private afAuth: AngularFireAuth,
-  	private router: Router) { }
+  	private router: Router,
+  	private dialog: MatDialog,
+  	private perguntasService: PerguntasService) { }
 
   ngOnInit() {
     this.validarAutenticacao();
-    let perguntas = [];
-    for (let i=1; i<=100; i++) {
-    	perguntas.push('Como se diz "vermelho" em inglês? ' + i);
-    }
-    this.dataSource = new MatTableDataSource<string[]>(perguntas);
-    this.dataSource.paginator = this.paginator;
+    this.perguntasService.obterPerguntas()
+      .subscribe(perguntas => {
+    	this.dataSource = new MatTableDataSource<Pergunta>(perguntas);
+    	this.dataSource.paginator = this.paginator;
+      });
   }
 
   validarAutenticacao() {
@@ -42,4 +48,38 @@ export class AdminComponent implements OnInit {
     this.afAuth.auth.signOut();
   }
 
+  confirmarRestauracaoDados() {
+    this.dialogRef = this.dialog.open(ConfirmarRestauracaoDialog);
+
+    this.dialogRef.afterClosed().subscribe(resposta => {
+      if (resposta === 'S') {
+      	this.perguntasService.restaurarPerguntas();
+      }
+    });
+  }
+
+}
+
+@Component({
+  selector: 'confirmar-restauracao-dados-dialog',
+  template: `
+  		<div style="text-align:center">
+	  		<h3>Deseja restaurar todos os dados de perguntas?</h3>
+	  		<button mat-raised-button 
+	  		    (click)="fecharDialog('N')">
+	  			Não
+	  		</button>
+	  		<button mat-raised-button color="primary"
+	  			(click)="fecharDialog('S')">
+	  			Sim
+	  		</button>
+	  	</div>`,
+})
+export class ConfirmarRestauracaoDialog {
+  constructor(
+    private dialogRef: MatDialogRef<ConfirmarRestauracaoDialog>) {}
+
+  fecharDialog(resposta: string) {
+  	this.dialogRef.close(resposta);
+  }
 }
