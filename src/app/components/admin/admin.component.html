@@ -23,6 +23,15 @@
 	      	{{ pergunta.opcoes[pergunta.correta] }}
 	      </mat-cell>
 	    </ng-container>
+	    <ng-container matColumnDef="acao">
+	      <mat-header-cell *matHeaderCellDef>&nbsp;</mat-header-cell>
+	      <mat-cell *matCellDef="let pergunta">
+	      	<a href="" (click)="atualizar($event, pergunta)" 
+	      	  matTooltip="Editar"><mat-icon>create</mat-icon></a>
+			<a href="" (click)="remover($event, pergunta.id)" 
+	      	  matTooltip="Excluir"><mat-icon>delete</mat-icon></a>
+	      </mat-cell>
+	    </ng-container>
 	    <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
 	    <mat-row *matRowDef="let row; columns: colunas;"></mat-row>
 	  </mat-table>
@@ -34,7 +43,10 @@
   	  </mat-paginator>
 	</div>
 	<div>
-		<button mat-button color="primary">Nova pergunta</button>
+		<button mat-button color="primary"
+			(click)="cadastrar()">
+			Nova pergunta
+		</button>
 		<button mat-button color="warn"
 			(click)="confirmarRestauracaoDados()">
 			Restaurar dados

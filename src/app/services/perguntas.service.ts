@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
 import { 
-	AngularFirestore, AngularFirestoreCollection 
+	AngularFirestore, 
+  AngularFirestoreCollection, 
+  AngularFirestoreDocument,
+  DocumentChangeAction
 } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
+import { MatSnackBar } from '@angular/material';
 
 import * as firebase from 'firebase';
 import { Pergunta } from '../models';
@@ -11,16 +15,29 @@ import { Pergunta } from '../models';
 export class PerguntasService {
 
   private perguntasCollection: AngularFirestoreCollection<Pergunta>;
+  //private perguntaDoc: AngularFirestoreDocument<Pergunta>;
   readonly PERGUNTAS_COLLECTION: string = 'perguntas';
+  readonly SNACKBAR_DURATION: any = { duration: 5000 };
 
   constructor(
-  	private afs: AngularFirestore) {
+  	private afs: AngularFirestore,
+    private snackBar: MatSnackBar) {
     this.perguntasCollection = this.afs.collection<Pergunta>(
       this.PERGUNTAS_COLLECTION);
   }
 
   obterPerguntas(): Observable<Pergunta[]> {
-    return this.perguntasCollection.valueChanges();
+    return this.perguntasCollection
+      .snapshotChanges()
+      .map(this.mapearIds);
+  }
+
+  mapearIds(perguntas: DocumentChangeAction[]): Pergunta[] {
+    return perguntas.map(objPergunta => {
+      const pergunta = objPergunta.payload.doc.data() as Pergunta;
+      pergunta.id = objPergunta.payload.doc.id;
+      return pergunta;
+    });
   }
 
   restaurarPerguntas() {
@@ -39,13 +56,36 @@ export class PerguntasService {
   	const perguntas = this.obterPerguntasExemplo();
   	for (let i in perguntas) {
   		const pergunta: Pergunta = {
-  			id: null,
   			questao: perguntas[i].questao,
   			opcoes: perguntas[i].opcoes,
   			correta: perguntas[i].correta
   		}
   		this.perguntasCollection.add(pergunta);
   	}
+    this.snackBar.open('Dados restaurados com sucesso!', 
+      'OK', this.SNACKBAR_DURATION);
+  }
+
+  cadastrar(pergunta: Pergunta) {
+    this.perguntasCollection.add(pergunta)
+      .then(res => this.snackBar.open(
+        'Pergunta adicionada com sucesso!', 
+        'OK', this.SNACKBAR_DURATION))
+      .catch(err => this.snackBar.open(
+        'Erro ao adicionar pergunta.', 
+        'Erro', this.SNACKBAR_DURATION));
+  }
+
+  remover(perguntaId: string) {
+    this.afs.doc<Pergunta>(
+      `${this.PERGUNTAS_COLLECTION}/${perguntaId}`)
+      .delete()
+      .then(res => this.snackBar.open(
+        'Pergunta removida com sucesso!', 
+        'OK', this.SNACKBAR_DURATION))
+      .catch(err => this.snackBar.open(
+        'Erro ao excluir pergunta.', 
+        'Erro', this.SNACKBAR_DURATION));
   }
 
   obterPerguntasExemplo() {

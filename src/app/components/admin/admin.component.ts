@@ -8,6 +8,10 @@ import {
 
 import { PerguntasService } from '../../services';
 import { Pergunta } from '../../models';
+import { 
+  ConfirmarRestauracaoDialogComponent,
+  PerguntaFormDialogComponent
+} from './dialogs';
 
 @Component({
   selector: 'app-admin',
@@ -16,10 +20,11 @@ import { Pergunta } from '../../models';
 })
 export class AdminComponent implements OnInit {
 
-  colunas = ['pergunta', 'opcoes', 'correta'];
+  colunas = ['pergunta', 'opcoes', 'correta', 'acao'];
   dataSource: MatTableDataSource<Pergunta>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  dialogRef: MatDialogRef<ConfirmarRestauracaoDialog>;
+  dialogRestaurarRef: MatDialogRef<ConfirmarRestauracaoDialogComponent>;
+  dialogPerguntaRef: MatDialogRef<PerguntaFormDialogComponent>;
 
   constructor(
   	private afAuth: AngularFireAuth,
@@ -31,8 +36,8 @@ export class AdminComponent implements OnInit {
     this.validarAutenticacao();
     this.perguntasService.obterPerguntas()
       .subscribe(perguntas => {
-    	this.dataSource = new MatTableDataSource<Pergunta>(perguntas);
-    	this.dataSource.paginator = this.paginator;
+    	  this.dataSource = new MatTableDataSource<Pergunta>(perguntas);
+    	  this.dataSource.paginator = this.paginator;
       });
   }
 
@@ -49,37 +54,35 @@ export class AdminComponent implements OnInit {
   }
 
   confirmarRestauracaoDados() {
-    this.dialogRef = this.dialog.open(ConfirmarRestauracaoDialog);
+    this.dialogRestaurarRef = this.dialog.open(
+      ConfirmarRestauracaoDialogComponent);
 
-    this.dialogRef.afterClosed().subscribe(resposta => {
-      if (resposta === 'S') {
+    this.dialogRestaurarRef.afterClosed().subscribe(resposta => {
+      if (resposta) {
       	this.perguntasService.restaurarPerguntas();
       }
     });
   }
 
-}
+  cadastrar() {
+    this.dialogPerguntaRef = this.dialog.open(
+      PerguntaFormDialogComponent);
 
-@Component({
-  selector: 'confirmar-restauracao-dados-dialog',
-  template: `
-  		<div style="text-align:center">
-	  		<h3>Deseja restaurar todos os dados de perguntas?</h3>
-	  		<button mat-raised-button 
-	  		    (click)="fecharDialog('N')">
-	  			Não
-	  		</button>
-	  		<button mat-raised-button color="primary"
-	  			(click)="fecharDialog('S')">
-	  			Sim
-	  		</button>
-	  	</div>`,
-})
-export class ConfirmarRestauracaoDialog {
-  constructor(
-    private dialogRef: MatDialogRef<ConfirmarRestauracaoDialog>) {}
-
-  fecharDialog(resposta: string) {
-  	this.dialogRef.close(resposta);
+    this.dialogPerguntaRef.afterClosed().subscribe(pergunta => {
+      if (pergunta) {
+        this.perguntasService.cadastrar(pergunta);
+      }
+    });
   }
+
+  atualizar($event: any, pergunta: Pergunta) {
+    $event.preventDefault();
+    console.log(JSON.stringify(pergunta));
+  }
+
+  remover($event: any, perguntaId: string) {
+    $event.preventDefault();
+    this.perguntasService.remover(perguntaId);
+  }
+
 }
