@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { 
 	AngularFirestore, 
   AngularFirestoreCollection, 
-  AngularFirestoreDocument,
   DocumentChangeAction
 } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
@@ -15,7 +14,6 @@ import { Pergunta } from '../models';
 export class PerguntasService {
 
   private perguntasCollection: AngularFirestoreCollection<Pergunta>;
-  //private perguntaDoc: AngularFirestoreDocument<Pergunta>;
   readonly PERGUNTAS_COLLECTION: string = 'perguntas';
   readonly SNACKBAR_DURATION: any = { duration: 5000 };
 
@@ -73,6 +71,18 @@ export class PerguntasService {
         'OK', this.SNACKBAR_DURATION))
       .catch(err => this.snackBar.open(
         'Erro ao adicionar pergunta.', 
+        'Erro', this.SNACKBAR_DURATION));
+  }
+
+  atualizar(pergunta: Pergunta, perguntaId: string) {
+    this.afs.doc<Pergunta>(
+      `${this.PERGUNTAS_COLLECTION}/${perguntaId}`)
+      .update(pergunta)
+      .then(res => this.snackBar.open(
+        'Pergunta atualizada com sucesso!', 
+        'OK', this.SNACKBAR_DURATION))
+      .catch(err => this.snackBar.open(
+        'Erro ao atualizar pergunta.', 
         'Erro', this.SNACKBAR_DURATION));
   }
 

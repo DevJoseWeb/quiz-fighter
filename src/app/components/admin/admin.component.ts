@@ -2,8 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { 
-	MatTableDataSource, MatPaginator, 
-	MatDialog, MatDialogRef, MAT_DIALOG_DATA 
+	MatTableDataSource, MatPaginator, MatDialog, MatDialogRef 
 } from '@angular/material';
 
 import { PerguntasService } from '../../services';
@@ -68,16 +67,25 @@ export class AdminComponent implements OnInit {
     this.dialogPerguntaRef = this.dialog.open(
       PerguntaFormDialogComponent);
 
-    this.dialogPerguntaRef.afterClosed().subscribe(pergunta => {
-      if (pergunta) {
-        this.perguntasService.cadastrar(pergunta);
+    this.dialogPerguntaRef.afterClosed().subscribe(data => {
+      if (data) {
+        this.perguntasService.cadastrar(data.pergunta);
       }
     });
   }
 
   atualizar($event: any, pergunta: Pergunta) {
     $event.preventDefault();
-    console.log(JSON.stringify(pergunta));
+    this.dialogPerguntaRef = this.dialog.open(
+      PerguntaFormDialogComponent, 
+      { data: { pergunta: pergunta } }
+    );
+
+    this.dialogPerguntaRef.afterClosed().subscribe(data => {
+      if (data) {
+        this.perguntasService.atualizar(data.pergunta, data.id);
+      }
+    });
   }
 
   remover($event: any, perguntaId: string) {

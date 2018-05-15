@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar, MatDialogRef } from '@angular/material';
+import { 
+	MatSnackBar, MatDialogRef, MAT_DIALOG_DATA 
+} from '@angular/material';
 
 import { Pergunta } from '../../../../models';
 
@@ -11,30 +13,42 @@ import { Pergunta } from '../../../../models';
 })
 export class PerguntaFormDialogComponent implements OnInit {
 
+  perguntaId: string;
   pergunta: Pergunta;
   form: FormGroup;
+  perguntaForm: Pergunta;
 
   constructor(
     private fb: FormBuilder, 
     private snackBar: MatSnackBar,
-    private dialogRef: MatDialogRef<PerguntaFormDialogComponent>) { }
+    private dialogRef: MatDialogRef<PerguntaFormDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit() {
+  	this.perguntaForm = this.obterDadosPergunta(this.data);
   	this.gerarForm();
+  }
+
+  obterDadosPergunta(data: any): Pergunta {
+  	if (!data) {
+  		return { questao: '', opcoes: Array<string>(4), correta: -1 };
+  	}
+  	this.perguntaId = data.pergunta.id;
+  	return data.pergunta as Pergunta;
   }
 
   gerarForm() {
     this.form = this.fb.group({
-      questao: ['', [ Validators.required ]],
-      opcao1:  ['', [ Validators.required ]],
-      opcao2:  ['', [ Validators.required ]],
-      opcao3:  ['', [ Validators.required ]],
-      opcao4:  ['', [ Validators.required ]],
-      correta: ['', [ Validators.required ]]
+      questao: [ this.perguntaForm.questao,   [ Validators.required ]],
+      opcao1:  [ this.perguntaForm.opcoes[0], [ Validators.required ]],
+      opcao2:  [ this.perguntaForm.opcoes[1], [ Validators.required ]],
+      opcao3:  [ this.perguntaForm.opcoes[2], [ Validators.required ]],
+      opcao4:  [ this.perguntaForm.opcoes[3], [ Validators.required ]],
+      correta: [ this.perguntaForm.correta,   [ Validators.required ]]
     });
   }
 
-  cadastrar() {
+  enviar() {
   	if (this.form.invalid) {
   		this.pergunta = null;
   	} else {
@@ -46,13 +60,15 @@ export class PerguntaFormDialogComponent implements OnInit {
   			dados.opcao4
   		];
   		this.pergunta = {
-  			id: null,
   			questao: dados.questao,
   			opcoes: opcoes,
   			correta: dados.correta
   		};
   	}
-  	this.dialogRef.close(this.pergunta);
+  	this.dialogRef.close({ 
+  		pergunta: this.pergunta, 
+  		id: this.perguntaId
+  	});
   }
 
 }

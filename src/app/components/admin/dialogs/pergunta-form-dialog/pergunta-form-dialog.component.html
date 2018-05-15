@@ -44,14 +44,21 @@
     </mat-list-item>
     <mat-list-item>
 	  <button mat-raised-button 
-	  	(click)="cadastrar()">
+	  	(click)="enviar()">
 		Cancelar
 	  </button>
 	  &nbsp;
 	  <button mat-raised-button color="primary" 
-	  	(click)="cadastrar()"
-	  	[disabled]="form.invalid">
+	  	(click)="enviar()"
+	  	[disabled]="form.invalid"
+	  	*ngIf="!data">
 		Cadastrar
+	  </button>
+	  <button mat-raised-button color="primary" 
+	  	(click)="enviar()"
+	  	[disabled]="form.invalid"
+	  	*ngIf="data">
+		Atualizar
 	  </button>
 	</mat-list-item>
   </mat-list> 
