@@ -85,7 +85,7 @@ export class PreJogoService {
       .doc<Jogo>(jogosCollectionUrl)
       .update(this.jogo)
         .then(res => this.router.navigate([jogoUrl]))
-        .catch(err => console.log('TODO tratar erro aqui...')
+        .catch(err => console.log(err)
     );
   }
 

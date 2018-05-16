@@ -13,7 +13,8 @@ import {
   MatDialogModule,
   MatSelectModule,
   MatIconModule,
-  MatTooltipModule
+  MatTooltipModule,
+  MatSlideToggleModule
 } from '@angular/material';
 import { AngularFireModule } from 'angularfire2';
 import { environment } from '../environments/environment';
@@ -28,7 +29,8 @@ import {
   PreJogoComponent, 
   AdminComponent, 
   ConfirmarRestauracaoDialogComponent, 
-  PerguntaFormDialogComponent
+  PerguntaFormDialogComponent,
+  JogosFormDialogComponent
 } from './components';
 import { 
   AnimacaoService, PreJogoService, JogoService, PerguntasService 
@@ -43,7 +45,8 @@ import { AppRoutingModule } from './app-routing.module';
     PreJogoComponent,
     AdminComponent,
     ConfirmarRestauracaoDialogComponent,
-    PerguntaFormDialogComponent
+    PerguntaFormDialogComponent,
+    JogosFormDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -58,6 +61,7 @@ import { AppRoutingModule } from './app-routing.module';
     MatSelectModule,
     MatIconModule,
     MatTooltipModule,
+    MatSlideToggleModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
@@ -72,7 +76,8 @@ import { AppRoutingModule } from './app-routing.module';
   ],
   entryComponents: [ 
     ConfirmarRestauracaoDialogComponent,
-    PerguntaFormDialogComponent
+    PerguntaFormDialogComponent,
+    JogosFormDialogComponent
   ],
   bootstrap: [ AppComponent ]
 })

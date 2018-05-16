@@ -2,8 +2,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { 
-  AngularFirestore, AngularFirestoreDocument 
+  AngularFirestore, 
+  AngularFirestoreDocument, 
+  AngularFirestoreCollection
 } from 'angularfire2/firestore';
+import { MatSnackBar } from '@angular/material';
+
+import * as firebase from 'firebase';
 
 import { Jogo } from '../models';
 import { AnimacaoService } from './animacao.service';
@@ -20,6 +25,7 @@ export class JogoService {
   readonly JOGADOR_2 = 1;
   readonly NENHUMA_SELECAO = -1;
   readonly JOGOS_DOC_PATH = 'jogos/';
+  readonly SNACKBAR_DURATION: any = { duration: 5000 };
 
   perguntaAtual: any;
   perguntas: any;
@@ -35,7 +41,8 @@ export class JogoService {
   constructor(
   	private afs: AngularFirestore,
   	private animacaoService: AnimacaoService,
-  	private afAuth: AngularFireAuth) {}
+  	private afAuth: AngularFireAuth,
+    private snackBar: MatSnackBar) {}
 
   iniciarRecursos(jogoId: string) {
   	this.aguardandoOponente = true;
@@ -188,6 +195,41 @@ export class JogoService {
   			this.jogo.vezJogar = this.JOGADOR_1;
   			break;
   	}
+  }
+
+  inicializarJogos(data: any) {
+    if (data.manterJogosExistentes) {
+      this.adicionarJogosPadrao(data.qtdJogos);
+    } else {
+      this.removerTodosJogos()
+        .then(res => this.adicionarJogosPadrao(data.qtdJogos))
+        .catch(err => this.snackBar.open(
+          'Erro ao inicializar jogos.', 
+          'Erro', this.SNACKBAR_DURATION));
+    }
+  }
+
+  async removerTodosJogos(): Promise<void> {
+    const jogos: firebase.firestore.QuerySnapshot = 
+      await this.afs.collection(this.JOGOS_DOC_PATH).ref.get();
+    const batch = this.afs.firestore.batch();
+    jogos.forEach(jogo => batch.delete(jogo.ref));
+    return batch.commit();
+  }
+
+  adicionarJogosPadrao(qtdJogos: number) {
+    if (qtdJogos <= 0) {
+      return;
+    }
+    let jogosCollection: AngularFirestoreCollection<Jogo>;
+    jogosCollection = this.afs.collection<Jogo>(this.JOGOS_DOC_PATH);
+    for (let i=0; i<qtdJogos; i++) {
+      const jogo: Jogo = { qtdJogadores: 0 };
+      jogosCollection.add(jogo);
+    }
+    this.snackBar.open(
+      'Jogos inicializados com sucesso!', 
+      'OK', this.SNACKBAR_DURATION)
   }
 
   obterPerguntas() {

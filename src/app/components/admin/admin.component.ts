@@ -5,11 +5,12 @@ import {
 	MatTableDataSource, MatPaginator, MatDialog, MatDialogRef 
 } from '@angular/material';
 
-import { PerguntasService } from '../../services';
+import { PerguntasService, JogoService } from '../../services';
 import { Pergunta } from '../../models';
 import { 
   ConfirmarRestauracaoDialogComponent,
-  PerguntaFormDialogComponent
+  PerguntaFormDialogComponent,
+  JogosFormDialogComponent
 } from './dialogs';
 
 @Component({
@@ -24,12 +25,14 @@ export class AdminComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   dialogRestaurarRef: MatDialogRef<ConfirmarRestauracaoDialogComponent>;
   dialogPerguntaRef: MatDialogRef<PerguntaFormDialogComponent>;
+  dialogJogosRef: MatDialogRef<JogosFormDialogComponent>;
 
   constructor(
   	private afAuth: AngularFireAuth,
   	private router: Router,
   	private dialog: MatDialog,
-  	private perguntasService: PerguntasService) { }
+  	private perguntasService: PerguntasService,
+    private jogoService: JogoService) { }
 
   ngOnInit() {
     this.validarAutenticacao();
@@ -68,7 +71,7 @@ export class AdminComponent implements OnInit {
       PerguntaFormDialogComponent);
 
     this.dialogPerguntaRef.afterClosed().subscribe(data => {
-      if (data) {
+      if (data && data.pergunta !== null) {
         this.perguntasService.cadastrar(data.pergunta);
       }
     });
@@ -82,8 +85,18 @@ export class AdminComponent implements OnInit {
     );
 
     this.dialogPerguntaRef.afterClosed().subscribe(data => {
-      if (data) {
+      if (data && data.pergunta !== null) {
         this.perguntasService.atualizar(data.pergunta, data.id);
+      }
+    });
+  }
+
+  inicializarJogos() {
+    this.dialogJogosRef = this.dialog.open(JogosFormDialogComponent);
+
+    this.dialogJogosRef.afterClosed().subscribe(data => {
+      if (data) {
+        this.jogoService.inicializarJogos(data);
       }
     });
   }

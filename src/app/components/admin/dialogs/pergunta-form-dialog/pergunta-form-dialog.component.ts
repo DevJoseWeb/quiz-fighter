@@ -71,4 +71,8 @@ export class PerguntaFormDialogComponent implements OnInit {
   	});
   }
 
+  fecharDialog() {
+    this.dialogRef.close();
+  }
+
 }
