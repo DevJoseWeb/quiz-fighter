@@ -45,7 +45,7 @@ export class AdminComponent implements OnInit {
 
   validarAutenticacao() {
     this.afAuth.authState.subscribe(authState => {
-      if (!authState) {
+      if (!authState || authState.email != 'admin@admin.com') {
         this.router.navigate(['/']);
       }
     });
