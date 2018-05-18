@@ -8,13 +8,15 @@ import { Observable } from 'rxjs/Observable';
 import { MatSnackBar } from '@angular/material';
 
 import * as firebase from 'firebase';
-import { Pergunta } from '../models';
+import { Pergunta, PerguntaQtd } from '../models';
 
 @Injectable()
 export class PerguntasService {
 
   private perguntasCollection: AngularFirestoreCollection<Pergunta>;
+  private perguntasQtdCollection: AngularFirestoreCollection<PerguntaQtd>;
   readonly PERGUNTAS_COLLECTION: string = 'perguntas';
+  readonly PERGUNTAS_QTD_COLLECTION: string = 'perguntas-qtd';
   readonly SNACKBAR_DURATION: any = { duration: 5000 };
 
   constructor(
@@ -22,6 +24,8 @@ export class PerguntasService {
     private snackBar: MatSnackBar) {
     this.perguntasCollection = this.afs.collection<Pergunta>(
       this.PERGUNTAS_COLLECTION);
+    this.perguntasQtdCollection = this.afs.collection<PerguntaQtd>(
+      this.PERGUNTAS_QTD_COLLECTION);
   }
 
   obterPerguntas(): Observable<Pergunta[]> {
@@ -40,6 +44,7 @@ export class PerguntasService {
 
   restaurarPerguntas() {
   	this.removerTodasPerguntas();
+    this.atualizarPerguntasQtd(0);
   }
 
   async removerTodasPerguntas() {
@@ -60,11 +65,24 @@ export class PerguntasService {
   		}
   		this.perguntasCollection.add(pergunta);
   	}
+    this.atualizarPerguntasQtd(perguntas.length);
     this.snackBar.open('Dados restaurados com sucesso!', 
       'OK', this.SNACKBAR_DURATION);
   }
 
-  cadastrar(pergunta: Pergunta) {
+  async atualizarPerguntasQtd(quantidade: number) {
+    const perguntaQtd: PerguntaQtd = { quantidade: quantidade };
+    const perguntasQtd: firebase.firestore.QuerySnapshot = 
+      await this.afs.collection(this.PERGUNTAS_QTD_COLLECTION).ref.get();
+    const batch = this.afs.firestore.batch();
+    perguntasQtd.forEach(pQtd => batch.delete(pQtd.ref));
+    batch
+      .commit()
+      .then(res => this.perguntasQtdCollection.add(perguntaQtd));
+  }
+
+  cadastrar(pergunta: Pergunta, qtdPerguntas: number) {
+    this.atualizarPerguntasQtd(qtdPerguntas);
     this.perguntasCollection.add(pergunta)
       .then(res => this.snackBar.open(
         'Pergunta adicionada com sucesso!', 
@@ -86,7 +104,8 @@ export class PerguntasService {
         'Erro', this.SNACKBAR_DURATION));
   }
 
-  remover(perguntaId: string) {
+  remover(perguntaId: string, qtdPerguntas: number) {
+    this.atualizarPerguntasQtd(qtdPerguntas);
     this.afs.doc<Pergunta>(
       `${this.PERGUNTAS_COLLECTION}/${perguntaId}`)
       .delete()

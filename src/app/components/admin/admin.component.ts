@@ -72,7 +72,8 @@ export class AdminComponent implements OnInit {
 
     this.dialogPerguntaRef.afterClosed().subscribe(data => {
       if (data && data.pergunta !== null) {
-        this.perguntasService.cadastrar(data.pergunta);
+        this.perguntasService.cadastrar(data.pergunta, 
+          this.dataSource.data.length + 1);
       }
     });
   }
@@ -103,7 +104,8 @@ export class AdminComponent implements OnInit {
 
   remover($event: any, perguntaId: string) {
     $event.preventDefault();
-    this.perguntasService.remover(perguntaId);
+    this.perguntasService.remover(perguntaId,
+      this.dataSource.data.length - 1);
   }
 
 }
