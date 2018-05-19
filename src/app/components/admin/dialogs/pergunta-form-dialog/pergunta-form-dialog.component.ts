@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { 
-	MatSnackBar, MatDialogRef, MAT_DIALOG_DATA 
+	MatDialogRef, MAT_DIALOG_DATA 
 } from '@angular/material';
 
 import { Pergunta } from '../../../../models';
@@ -19,8 +19,7 @@ export class PerguntaFormDialogComponent implements OnInit {
   perguntaForm: Pergunta;
 
   constructor(
-    private fb: FormBuilder, 
-    private snackBar: MatSnackBar,
+    private fb: FormBuilder,
     private dialogRef: MatDialogRef<PerguntaFormDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 

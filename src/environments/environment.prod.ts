@@ -7,5 +7,6 @@ export const environment = {
     projectId: "quiz-fighter-dev",
     storageBucket: "",
     messagingSenderId: "28741904434"
-  }
+  },
+  adminEmail: 'admin@admin.com'
 };

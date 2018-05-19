@@ -43,16 +43,16 @@ export class PerguntasService {
   }
 
   restaurarPerguntas() {
-  	this.removerTodasPerguntas();
-    this.atualizarPerguntasQtd(0);
+  	this.removerTodasPerguntas()
+      .then(res => this.adicionarPerguntas());
   }
 
-  async removerTodasPerguntas() {
+  async removerTodasPerguntas(): Promise<void> {
   	const perguntas: firebase.firestore.QuerySnapshot = 
   		await this.afs.collection(this.PERGUNTAS_COLLECTION).ref.get();
   	const batch = this.afs.firestore.batch();
   	perguntas.forEach(pergunta => batch.delete(pergunta.ref));
-  	batch.commit().then(res => this.adicionarPerguntas());
+  	return batch.commit();
   }
 
   adicionarPerguntas() {
@@ -65,24 +65,13 @@ export class PerguntasService {
   		}
   		this.perguntasCollection.add(pergunta);
   	}
-    this.atualizarPerguntasQtd(perguntas.length);
+    this.definirQtdPerguntas(perguntas.length);
     this.snackBar.open('Dados restaurados com sucesso!', 
       'OK', this.SNACKBAR_DURATION);
   }
 
-  async atualizarPerguntasQtd(quantidade: number) {
-    const perguntaQtd: PerguntaQtd = { quantidade: quantidade };
-    const perguntasQtd: firebase.firestore.QuerySnapshot = 
-      await this.afs.collection(this.PERGUNTAS_QTD_COLLECTION).ref.get();
-    const batch = this.afs.firestore.batch();
-    perguntasQtd.forEach(pQtd => batch.delete(pQtd.ref));
-    batch
-      .commit()
-      .then(res => this.perguntasQtdCollection.add(perguntaQtd));
-  }
-
   cadastrar(pergunta: Pergunta, qtdPerguntas: number) {
-    this.atualizarPerguntasQtd(qtdPerguntas);
+    this.definirQtdPerguntas(qtdPerguntas);
     this.perguntasCollection.add(pergunta)
       .then(res => this.snackBar.open(
         'Pergunta adicionada com sucesso!', 
@@ -105,7 +94,7 @@ export class PerguntasService {
   }
 
   remover(perguntaId: string, qtdPerguntas: number) {
-    this.atualizarPerguntasQtd(qtdPerguntas);
+    this.definirQtdPerguntas(qtdPerguntas);
     this.afs.doc<Pergunta>(
       `${this.PERGUNTAS_COLLECTION}/${perguntaId}`)
       .delete()
@@ -115,6 +104,17 @@ export class PerguntasService {
       .catch(err => this.snackBar.open(
         'Erro ao excluir pergunta.', 
         'Erro', this.SNACKBAR_DURATION));
+  }
+
+  async definirQtdPerguntas(quantidade: number) {
+    const perguntaQtd: PerguntaQtd = { quantidade: quantidade };
+    const perguntasQtd: firebase.firestore.QuerySnapshot = 
+      await this.afs.collection(
+        this.PERGUNTAS_QTD_COLLECTION).ref.get();
+    const batch = this.afs.firestore.batch();
+    perguntasQtd.forEach(pQtd => batch.delete(pQtd.ref));
+    batch.commit().then(
+      res => this.perguntasQtdCollection.add(perguntaQtd));
   }
 
   obterPerguntasExemplo() {

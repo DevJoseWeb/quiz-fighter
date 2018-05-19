@@ -4,13 +4,15 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { 
 	MatTableDataSource, MatPaginator, MatDialog, MatDialogRef 
 } from '@angular/material';
+import { environment as env } from '../../../environments/environment';
 
 import { PerguntasService, JogoService } from '../../services';
 import { Pergunta } from '../../models';
 import { 
   ConfirmarRestauracaoDialogComponent,
   PerguntaFormDialogComponent,
-  JogosFormDialogComponent
+  JogosFormDialogComponent,
+  ConfirmarRemoverDialogComponent
 } from './dialogs';
 
 @Component({
@@ -26,6 +28,7 @@ export class AdminComponent implements OnInit {
   dialogRestaurarRef: MatDialogRef<ConfirmarRestauracaoDialogComponent>;
   dialogPerguntaRef: MatDialogRef<PerguntaFormDialogComponent>;
   dialogJogosRef: MatDialogRef<JogosFormDialogComponent>;
+  dialogRemoverRef: MatDialogRef<ConfirmarRemoverDialogComponent>;
 
   constructor(
   	private afAuth: AngularFireAuth,
@@ -45,7 +48,7 @@ export class AdminComponent implements OnInit {
 
   validarAutenticacao() {
     this.afAuth.authState.subscribe(authState => {
-      if (!authState || authState.email != 'admin@admin.com') {
+      if (!authState || authState.email != env.adminEmail) {
         this.router.navigate(['/']);
       }
     });
@@ -104,8 +107,18 @@ export class AdminComponent implements OnInit {
 
   remover($event: any, perguntaId: string) {
     $event.preventDefault();
-    this.perguntasService.remover(perguntaId,
-      this.dataSource.data.length - 1);
+
+    this.dialogRemoverRef = this.dialog.open(
+      ConfirmarRemoverDialogComponent, 
+      { data: { perguntaId: perguntaId } }
+    );
+
+    this.dialogRemoverRef.afterClosed().subscribe(data => {
+      if (data) {
+        this.perguntasService.remover(data.perguntaId,
+          this.dataSource.data.length - 1);
+      }
+    });
   }
 
 }

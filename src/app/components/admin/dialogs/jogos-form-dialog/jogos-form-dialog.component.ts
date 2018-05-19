@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { 
-	MatSnackBar, MatDialogRef, MAT_DIALOG_DATA 
+	MatSnackBar, MatDialogRef 
 } from '@angular/material';
 
 @Component({
@@ -17,8 +17,7 @@ export class JogosFormDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder, 
     private snackBar: MatSnackBar,
-    private dialogRef: MatDialogRef<JogosFormDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { }
+    private dialogRef: MatDialogRef<JogosFormDialogComponent>) { }
 
   ngOnInit() {
   	this.gerarForm();
