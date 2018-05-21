@@ -113,8 +113,8 @@ export class PerguntasService {
         this.PERGUNTAS_QTD_COLLECTION).ref.get();
     const batch = this.afs.firestore.batch();
     perguntasQtd.forEach(pQtd => batch.delete(pQtd.ref));
-    batch.commit().then(
-      res => this.perguntasQtdCollection.add(perguntaQtd));
+    batch.commit()
+      .then(res => this.perguntasQtdCollection.add(perguntaQtd));
   }
 
   obterPerguntasExemplo() {

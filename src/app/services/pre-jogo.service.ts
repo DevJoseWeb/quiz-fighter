@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { 
 	AngularFirestore, 
 	AngularFirestoreCollection, 
-	AngularFirestoreDocument 
+	AngularFirestoreDocument ,
+  DocumentChangeAction
 } from 'angularfire2/firestore';
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
@@ -19,7 +20,8 @@ export class PreJogoService {
   readonly JOGO_DOCUMENT = '/jogo/';
 
   personagem: string;
-  jogos: Observable<Jogo[]>;
+  jogos: Observable<DocumentChangeAction[]>;
+  jogoId: string;
   jogo: Jogo;
   jogoDoc: AngularFirestoreDocument<Jogo>;
   nomeJogador: string;
@@ -28,23 +30,31 @@ export class PreJogoService {
   	private afs: AngularFirestore,
   	private router: Router) {}
 
+  obterJogosDisponiveis() {
+    this.jogos = this.afs.collection<Jogo>(
+      this.JOGOS_COLLECTION, 
+      ref => ref.where(this.JOGOS_QTD_JOGADORES, '<=', 1)
+                .orderBy(this.JOGOS_QTD_JOGADORES, "desc"))
+    .snapshotChanges();
+  }
+
   selecionarPersonagem(personagem: string) {
     this.personagem = personagem;
     this.jogo = null; // necessário para um segundo jogo
-    this.jogos.subscribe(jogos => {
-      if (jogos.length > 0 && !this.jogo) {
-        //TODO iterar e obter o primeiro jogo disponível...
-        this.jogo = jogos[0];
-        this.iniciarJogo();
+    this.jogos.subscribe((jogosDoc: DocumentChangeAction[]) => {
+      for (let i in jogosDoc) {
+        if (!this.jogo) {
+          this.selecionarJogo(jogosDoc[i]);
+        }
       } 
     });
   }
 
-  obterJogosDisponiveis() {
-    this.jogos = this.afs.collection<Jogo>(
-      this.JOGOS_COLLECTION, 
-      ref => ref.where(this.JOGOS_QTD_JOGADORES, '<=', 1))
-    .valueChanges();
+  selecionarJogo(jogoDoc: DocumentChangeAction) {
+    const jogo = jogoDoc.payload.doc;
+    this.jogoId = jogo.id;
+    this.jogo = jogo.data() as Jogo;
+    this.iniciarJogo();
   }
 
   iniciarJogo() {
@@ -79,8 +89,8 @@ export class PreJogoService {
   }
 
   atualizarDadosJogoFirebase() {
-    const jogosCollectionUrl = this.JOGOS_COLLECTION + this.jogo.id;
-    const jogoUrl = this.JOGO_DOCUMENT + this.jogo.id;
+    const jogosCollectionUrl = this.JOGOS_COLLECTION + this.jogoId;
+    const jogoUrl = this.JOGO_DOCUMENT + this.jogoId;
     this.afs
       .doc<Jogo>(jogosCollectionUrl)
       .update(this.jogo)

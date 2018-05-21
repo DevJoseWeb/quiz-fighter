@@ -1,3 +1,4 @@
+
 export interface Pergunta {
   	questao: string;
   	opcoes: string[];

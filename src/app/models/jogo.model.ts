@@ -3,14 +3,14 @@ export interface Jogo {
 	qtdJogadores: number;
 	vezJogar?: number;
 	placar?: {
-		jogador1: { acertos: number }, 
-  		jogador2: { acertos: number }
-  	};
-  	questaoNum?: number;
-  	questaoSel?: number;
-  	questaoCorreta?: boolean;
-  	dataAtualizacao?: number;
-  	jogador1?: { nome: string, personagem: string };
+	  jogador1: { acertos: number }, 
+		jogador2: { acertos: number }
+	};
+	questaoNum?: number;
+	questaoSel?: number;
+	questaoCorreta?: boolean;
+	dataAtualizacao?: number;
+	jogador1?: { nome: string, personagem: string };
 	jogador2?: { nome: string, personagem: string };
-  	id?: string;
+  id?: string;
 }

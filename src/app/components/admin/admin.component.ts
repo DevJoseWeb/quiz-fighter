@@ -25,10 +25,6 @@ export class AdminComponent implements OnInit {
   colunas = ['pergunta', 'opcoes', 'correta', 'acao'];
   dataSource: MatTableDataSource<Pergunta>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  dialogRestaurarRef: MatDialogRef<ConfirmarRestauracaoDialogComponent>;
-  dialogPerguntaRef: MatDialogRef<PerguntaFormDialogComponent>;
-  dialogJogosRef: MatDialogRef<JogosFormDialogComponent>;
-  dialogRemoverRef: MatDialogRef<ConfirmarRemoverDialogComponent>;
 
   constructor(
   	private afAuth: AngularFireAuth,
@@ -59,61 +55,57 @@ export class AdminComponent implements OnInit {
   }
 
   confirmarRestauracaoDados() {
-    this.dialogRestaurarRef = this.dialog.open(
-      ConfirmarRestauracaoDialogComponent);
-
-    this.dialogRestaurarRef.afterClosed().subscribe(resposta => {
-      if (resposta) {
-      	this.perguntasService.restaurarPerguntas();
-      }
-    });
+    this.dialog
+      .open(ConfirmarRestauracaoDialogComponent)
+      .afterClosed().subscribe(resposta => {
+        if (resposta) {
+        	this.perguntasService.restaurarPerguntas();
+        }
+      });
   }
 
   cadastrar() {
-    this.dialogPerguntaRef = this.dialog.open(
-      PerguntaFormDialogComponent);
-
-    this.dialogPerguntaRef.afterClosed().subscribe(data => {
-      if (data && data.pergunta !== null) {
-        this.perguntasService.cadastrar(data.pergunta, 
-          this.dataSource.data.length + 1);
-      }
-    });
+    this.dialog
+      .open(PerguntaFormDialogComponent)
+      .afterClosed().subscribe(data => {
+        if (data && data.pergunta !== null) {
+          this.perguntasService.cadastrar(data.pergunta, 
+            this.dataSource.data.length + 1);
+        }
+      });
   }
 
   atualizar($event: any, pergunta: Pergunta) {
     $event.preventDefault();
-    this.dialogPerguntaRef = this.dialog.open(
-      PerguntaFormDialogComponent, 
-      { data: { pergunta: pergunta } }
-    );
-
-    this.dialogPerguntaRef.afterClosed().subscribe(data => {
-      if (data && data.pergunta !== null) {
-        this.perguntasService.atualizar(data.pergunta, data.id);
-      }
-    });
+    this.dialog
+      .open(
+        PerguntaFormDialogComponent, 
+        { data: { pergunta: pergunta } }
+      )
+      .afterClosed().subscribe(data => {
+        if (data && data.pergunta !== null) {
+          this.perguntasService.atualizar(data.pergunta, data.id);
+        }
+      });
   }
 
   inicializarJogos() {
-    this.dialogJogosRef = this.dialog.open(JogosFormDialogComponent);
-
-    this.dialogJogosRef.afterClosed().subscribe(data => {
-      if (data) {
-        this.jogoService.inicializarJogos(data);
-      }
-    });
+    this.dialog
+      .open(JogosFormDialogComponent)
+      .afterClosed().subscribe(data => {
+        if (data) {
+          this.jogoService.inicializarJogos(data);
+        }
+      });
   }
 
   remover($event: any, perguntaId: string) {
     $event.preventDefault();
-
-    this.dialogRemoverRef = this.dialog.open(
+    this.dialog.open(
       ConfirmarRemoverDialogComponent, 
       { data: { perguntaId: perguntaId } }
-    );
-
-    this.dialogRemoverRef.afterClosed().subscribe(data => {
+    )
+    .afterClosed().subscribe(data => {
       if (data) {
         this.perguntasService.remover(data.perguntaId,
           this.dataSource.data.length - 1);

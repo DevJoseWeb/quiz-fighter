@@ -21,7 +21,7 @@ export class PerguntaFormDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<PerguntaFormDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { }
+    @Inject(MAT_DIALOG_DATA) private data: any) { }
 
   ngOnInit() {
   	this.perguntaForm = this.obterDadosPergunta(this.data);
