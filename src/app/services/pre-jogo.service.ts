@@ -54,6 +54,8 @@ export class PreJogoService {
     const jogo = jogoDoc.payload.doc;
     this.jogoId = jogo.id;
     this.jogo = jogo.data() as Jogo;
+    console.log(`JOGO ID: ${this.jogoId}`);
+    console.log(JSON.stringify(this.jogo));
     this.iniciarJogo();
   }
 
@@ -64,6 +66,16 @@ export class PreJogoService {
   }
 
   popularDadosJogo() {
+    this.jogo.dataAtualizacao = new Date().getTime();
+
+    //caso jogador1 seja o mesmo da seleção vai para a espera do adversário
+    if (this.jogo.qtdJogadores == 1 && 
+      this.jogo.jogador1.nome == this.nomeJogador) {
+      console.log('MESMO JOGADOR1...');
+      this.jogo.jogador1.personagem = this.personagem;
+      return;
+    }
+
     const dadosJogador = { 
       nome: this.nomeJogador, 
       personagem: this.personagem 
@@ -75,7 +87,6 @@ export class PreJogoService {
       this.definirDadosPadraoJogo();
     }
     this.jogo.qtdJogadores++;
-    this.jogo.dataAtualizacao = new Date().getTime();
   }
 
   definirDadosPadraoJogo() {
