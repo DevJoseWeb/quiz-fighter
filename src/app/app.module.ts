@@ -34,7 +34,12 @@ import {
   ConfirmarRemoverDialogComponent
 } from './components';
 import { 
-  AnimacaoService, PreJogoService, JogoService, PerguntasService 
+  AnimacaoService, 
+  PreJogoService, 
+  JogoService, 
+  PerguntasService,
+  Jogador1StrategyService,
+  Jogador2StrategyService 
 } from './services';
 import { AppRoutingModule } from './app-routing.module';
 
@@ -74,7 +79,9 @@ import { AppRoutingModule } from './app-routing.module';
   	AnimacaoService,
     PreJogoService,
     JogoService,
-    PerguntasService
+    PerguntasService,
+    Jogador1StrategyService,
+    Jogador2StrategyService
   ],
   entryComponents: [ 
     ConfirmarRestauracaoDialogComponent,
