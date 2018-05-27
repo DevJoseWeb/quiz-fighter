@@ -69,8 +69,7 @@ export class AdminComponent implements OnInit {
       .open(PerguntaFormDialogComponent)
       .afterClosed().subscribe(data => {
         if (data && data.pergunta !== null) {
-          this.perguntasService.cadastrar(data.pergunta, 
-            this.dataSource.data.length + 1);
+          this.perguntasService.cadastrar(data.pergunta);
         }
       });
   }
@@ -107,8 +106,7 @@ export class AdminComponent implements OnInit {
     )
     .afterClosed().subscribe(data => {
       if (data) {
-        this.perguntasService.remover(data.perguntaId,
-          this.dataSource.data.length - 1);
+        this.perguntasService.remover(data.perguntaId);
       }
     });
   }
