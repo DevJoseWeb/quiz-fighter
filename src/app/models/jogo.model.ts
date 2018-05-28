@@ -1,4 +1,4 @@
-import { Pergunta } from './';
+import { Pergunta, DadosJogador } from './';
 
 export interface Jogo {
 	qtdJogadores: number;
@@ -12,7 +12,7 @@ export interface Jogo {
 	questaoSel?: number;
 	questaoCorreta?: boolean;
 	dataAtualizacao?: number;
-	jogador1?: { nome: string, personagem: string };
-	jogador2?: { nome: string, personagem: string };
+	jogador1?: DadosJogador;
+	jogador2?: DadosJogador;
   	id?: string;
 }

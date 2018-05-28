@@ -28,7 +28,6 @@ export class JogoService {
   readonly SNACKBAR_DURATION: any = { duration: 5000 };
 
   perguntaAtual: any;
-  perguntas: any;
   msgPopup: string;
   aguardandoOponente: boolean;
   mostrarPopup: boolean;
@@ -48,8 +47,7 @@ export class JogoService {
   	this.aguardandoOponente = true;
   	this.mostrarPopup = false;
   	this.fimJogo = false;
-  	this.perguntas = this.obterPerguntas();
-  	this.perguntaAtual = this.perguntas[0];
+  	this.perguntaAtual = { questao: '', opcoes: [] };
     this.jogoDoc = this.afs.doc<Jogo>(this.JOGOS_DOC_PATH + jogoId);
     this.jogoObserver = this.jogoDoc.valueChanges();
   }
@@ -57,6 +55,9 @@ export class JogoService {
   iniciarJogo() {
   	this.obterNomeJogador();
     this.jogoObserver.subscribe(jogo => {
+      if (this.perguntaAtual.questao == '' && jogo.questoes) {
+        this.perguntaAtual = jogo.questoes[0];
+      }
       if (this.fimJogo) {
       	return;
       }
@@ -107,7 +108,7 @@ export class JogoService {
       this.msgPopup = this.MSG_INCORRETA;
     }
     this.verificarFimJogo();
-    this.perguntaAtual = this.perguntas[this.jogo.questaoNum];
+    this.perguntaAtual = this.jogo.questoes[this.jogo.questaoNum];
   }
 
   obterJogadorAnterior(): number {
@@ -170,7 +171,11 @@ export class JogoService {
   	}
   	this.atualizarVezJogar();
   	this.jogo.questaoSel = this.NENHUMA_SELECAO;
-  	this.perguntaAtual = this.perguntas[++this.jogo.questaoNum];
+    this.jogo.questaoNum++;
+    if (this.jogo.questoes.length == this.jogo.questaoNum) {
+      this.jogo.questaoNum = 0;
+    }
+  	this.perguntaAtual = this.jogo.questoes[this.jogo.questaoNum];
     this.jogoDoc.update(this.jogo);
   }
 
@@ -230,113 +235,6 @@ export class JogoService {
     this.snackBar.open(
       'Jogos inicializados com sucesso!', 
       'OK', this.SNACKBAR_DURATION)
-  }
-
-  obterPerguntas() {
-  	let questoes = [
-  		{ 
-  			questao: 'Como se diz "azul" em inglês?',
-  			opcoes: ['Black', 'Blue', 'Green', 'Purple'],
-  			correta: 1
-  		},
-  		{ 
-  			questao: 'Como se diz "verde" em inglês?',
-  			opcoes: ['Green', 'Blue', 'Black', 'Purple'],
-  			correta: 0
-  		},
-  		{ 
-  			questao: 'Como se diz "preto" em inglês?',
-  			opcoes: ['Pink', 'Blue', 'Black', 'Purple'],
-  			correta: 2
-  		},
-  		{ 
-  			questao: 'Como se diz "vermelho" em inglês?',
-  			opcoes: ['Black', 'Blue', 'Red', 'Purple'],
-  			correta: 2
-  		},
-  		{ 
-  			questao: 'Como se diz "amarelo" em inglês?',
-  			opcoes: ['Green', 'Blue', 'Black', 'Yellow'],
-  			correta: 3
-  		},
-  		{ 
-  			questao: 'Como se diz "branco" em inglês?',
-  			opcoes: ['White', 'Blue', 'Black', 'Purple'],
-  			correta: 0
-  		},
-  		{ 
-  			questao: 'Como se diz "cinza" em inglês?',
-  			opcoes: ['Green', 'Gray', 'Black', 'Purple'],
-  			correta: 1
-  		},
-  		{ 
-  			questao: 'Como se diz "Roxo" em inglês?',
-  			opcoes: ['Green', 'Blue', 'Black', 'Purple'],
-  			correta: 3
-  		},
-  		{ 
-  			questao: 'Como se diz "Rosa" em inglês?',
-  			opcoes: ['Green', 'Blue', 'Pink', 'Purple'],
-  			correta: 2
-  		},
-  		{ 
-  			questao: 'Como se diz "laranja" em inglês?',
-  			opcoes: ['Green', 'Blue', 'Black', 'Orange'],
-  			correta: 3
-  		},
-  		{ 
-  			questao: 'Como se diz "azul" em inglês?',
-  			opcoes: ['Green', 'Blue', 'Black', 'Purple'],
-  			correta: 1
-  		},
-  		{ 
-  			questao: 'Como se diz "verde" em inglês?',
-  			opcoes: ['Green', 'Blue', 'Black', 'Purple'],
-  			correta: 0
-  		},
-  		{ 
-  			questao: 'Como se diz "preto" em inglês?',
-  			opcoes: ['Green', 'Blue', 'Black', 'Purple'],
-  			correta: 2
-  		},
-  		{ 
-  			questao: 'Como se diz "vermelho" em inglês?',
-  			opcoes: ['Green', 'Blue', 'Red', 'Purple'],
-  			correta: 2
-  		},
-  		{ 
-  			questao: 'Como se diz "amarelo" em inglês?',
-  			opcoes: ['Green', 'Blue', 'Black', 'Yellow'],
-  			correta: 3
-  		},
-  		{ 
-  			questao: 'Como se diz "branco" em inglês?',
-  			opcoes: ['White', 'Blue', 'Black', 'Purple'],
-  			correta: 0
-  		},
-  		{ 
-  			questao: 'Como se diz "cinza" em inglês?',
-  			opcoes: ['Green', 'Gray', 'Black', 'Purple'],
-  			correta: 1
-  		},
-  		{ 
-  			questao: 'Como se diz "Roxo" em inglês?',
-  			opcoes: ['Green', 'Blue', 'Black', 'Purple'],
-  			correta: 3
-  		},
-  		{ 
-  			questao: 'Como se diz "Rosa" em inglês?',
-  			opcoes: ['Green', 'Blue', 'Pink', 'Purple'],
-  			correta: 2
-  		},
-  		{ 
-  			questao: 'Como se diz "laranja" em inglês?',
-  			opcoes: ['Green', 'Blue', 'Black', 'Orange'],
-  			correta: 3
-  		}
-  	];
-  	//questoes.sort(() => 0.5 - Math.random());
-  	return questoes;
   }
 
 }
