@@ -16,7 +16,7 @@ export class PreJogoComponent implements OnInit {
     public animService: AnimacaoService,
   	private router: Router,
   	private afAuth: AngularFireAuth,
-    private preJogoService: PreJogoService) {}
+    private preJogoService: PreJogoService) { }
 
   ngOnInit() {
     this.validarAutenticacao();

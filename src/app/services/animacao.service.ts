@@ -272,4 +272,8 @@ export class AnimacaoService {
   				&& sprite.scaleX < 0);
   }
 
+  //destroyGame() {
+  	//this.game.destroy();
+  //}
+
 }

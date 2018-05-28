@@ -19,6 +19,7 @@ export class JogoService {
   readonly MSG_CORRETA   = 'Certa resposta!';
   readonly MSG_INCORRETA = 'Resposta incorreta.';
   readonly MSG_VENCEU = ' venceu.';
+  readonly MSG_VITORIA_ABANDONO = 'Você venceu porque seu adversário abandonou o jogo!';
   readonly NUM_QUESTOES  = 5;
   readonly QTD_PONTOS_TOTAIS  = 150;
   readonly JOGADOR_1 = 0;
@@ -41,7 +42,7 @@ export class JogoService {
   	private afs: AngularFirestore,
   	private animacaoService: AnimacaoService,
   	private afAuth: AngularFireAuth,
-    private snackBar: MatSnackBar) {}
+    private snackBar: MatSnackBar) { }
 
   iniciarRecursos(jogoId: string) {
   	this.aguardandoOponente = true;
@@ -71,6 +72,9 @@ export class JogoService {
         this.iniciarAnimacao();
         this.aguardandoOponente = false;
       }
+      if (jogo.qtdJogadores == 0) {
+        this.vitoriaPorAbandono();
+      }
     });
   }
 
@@ -86,8 +90,7 @@ export class JogoService {
     const forcaHit: number = Math.ceil(
       this.QTD_PONTOS_TOTAIS / this.NUM_QUESTOES);
 
-    const pontosAtuaisJ1 =  
-    this.animacaoService.iniciarAnimacao([
+    const pontosAtuaisJ1 = this.animacaoService.iniciarAnimacao([
         this.jogo.jogador1.personagem, 
         this.jogo.jogador2.personagem,
       ], 
@@ -98,6 +101,11 @@ export class JogoService {
       this.jogo.jogador2.nome,
       this.jogo.placar.jogador1.acertos * forcaHit
     );
+  }
+
+  vitoriaPorAbandono() {
+    this.msgPopup = this.MSG_VITORIA_ABANDONO;
+    this.fimJogo = true;
   }
 
   atualizarJogo() {
@@ -129,15 +137,7 @@ export class JogoService {
       this.fimJogo = true;
     }
     if (this.fimJogo) {
-	    this.jogo.vezJogar = this.JOGADOR_1;
-	    this.jogo.placar = {
-	      jogador1: { acertos: 0 }, 
-	      jogador2: { acertos: 0 }
-	    };
-	    this.jogo.questaoNum = 0;
-	    this.jogo.questaoSel = this.NENHUMA_SELECAO;
-	    this.jogo.qtdJogadores = 0;
-	    this.jogoDoc.update(this.jogo);
+      this.restaurarJogo();
     }
   }
 
@@ -200,6 +200,10 @@ export class JogoService {
   			this.jogo.vezJogar = this.JOGADOR_1;
   			break;
   	}
+  }
+
+  restaurarJogo(): Promise<void> {
+    return this.jogoDoc.update({ qtdJogadores: 0 });
   }
 
   inicializarJogos(data: any) {

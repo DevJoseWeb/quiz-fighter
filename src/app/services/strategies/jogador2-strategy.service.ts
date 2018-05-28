@@ -13,7 +13,7 @@ export class Jogador2StrategyService extends JogadorStrategy {
   readonly JOGADOR_1 = 0;
   readonly NENHUMA_OPCAO_SEL = -1;
   readonly QUESTAO_INICIAL_POS = 0;
-  readonly NUM_QUESTOES_JOGO = 3;
+  readonly NUM_QUESTOES_JOGO = 20;
 
   constructor(
   	private perguntasService: PerguntasService,

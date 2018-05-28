@@ -1,5 +1,5 @@
 import { 
-  Component, AfterViewInit, OnInit, OnDestroy 
+  Component, AfterViewInit, OnInit, OnDestroy, HostListener
 } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -35,10 +35,16 @@ export class JogoComponent implements AfterViewInit,
   }
 
   ngOnDestroy() {
-    const canvas = document.getElementsByTagName('canvas');
+    this.jogoService.restaurarJogo();
+    /*const canvas = document.getElementsByTagName('canvas');
     if (canvas.length > 0) {
       canvas[0].remove();
-    }
+    }*/
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  onBeforeunload(event) {
+      this.jogoService.restaurarJogo();
   }
 
   selecionarOpcao(opcaoNum: number) {
@@ -55,7 +61,8 @@ export class JogoComponent implements AfterViewInit,
   }
 
   novoJogo() {
-    this.router.navigate(['/pre-jogo']);
+    this.jogoService.restaurarJogo()
+      .then(res => this.router.navigate(['/pre-jogo']));
   }
 
   selecionado(index: number) {
