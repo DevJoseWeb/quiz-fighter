@@ -241,4 +241,8 @@ export class JogoService {
       'OK', this.SNACKBAR_DURATION)
   }
 
+  destroyGame() {
+    this.animacaoService.destroyGame();
+  }
+
 }

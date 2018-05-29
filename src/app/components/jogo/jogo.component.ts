@@ -36,10 +36,6 @@ export class JogoComponent implements AfterViewInit,
 
   ngOnDestroy() {
     this.jogoService.restaurarJogo();
-    /*const canvas = document.getElementsByTagName('canvas');
-    if (canvas.length > 0) {
-      canvas[0].remove();
-    }*/
   }
 
   @HostListener('window:beforeunload', ['$event'])

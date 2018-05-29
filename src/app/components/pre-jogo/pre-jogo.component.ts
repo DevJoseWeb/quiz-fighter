@@ -19,6 +19,9 @@ export class PreJogoComponent implements OnInit {
     private preJogoService: PreJogoService) { }
 
   ngOnInit() {
+    if (this.animService.gameObj) {
+      location.reload();
+    }
     this.validarAutenticacao();
   	this.preJogoService.obterJogosDisponiveis();
   }
