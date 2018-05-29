@@ -11,7 +11,7 @@ export class ConfirmarRestauracaoDialogComponent {
   constructor(
     private dialogRef: MatDialogRef<ConfirmarRestauracaoDialogComponent>) {}
 
-  fecharDialog(resposta: string) {
+  fecharDialog(resposta: boolean) {
   	this.dialogRef.close(resposta);
   }
 

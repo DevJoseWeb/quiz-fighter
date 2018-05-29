@@ -272,4 +272,12 @@ export class AnimacaoService {
   				&& sprite.scaleX < 0);
   }
 
+  destroyGame() {
+  	this.game.destroy(true);
+  }
+
+  get gameObj(): Phaser.Game {
+  	return this.game;
+  }
+
 }
